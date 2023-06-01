@@ -70,9 +70,7 @@ export const retrieverGenerator = (
 
   // generate type
   let paramType = "";
-  params.forEach((key) => {
-    paramType += `"${key}": string;`;
-  });
+  params.forEach((key) => (paramType += `"${key}": string;`));
   if (paramType.length > 0) {
     paramType = `<{${paramType}}>`;
     code = `const ${fnName}: Retriever${paramType} = async (params) => (await fetch(formatURL(\`${path}\`, params))).json();`;
