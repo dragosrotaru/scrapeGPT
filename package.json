@@ -9,7 +9,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apk-mitm": "1.2.1",
+    "gpt3-tokenizer": "^1.1.5",
+    "jsdom": "^22.1.0",
+    "openai": "^3.3.0",
     "puppeteer": "^19.7.5",
     "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^21.1.1",
+    "@types/node": "^20.3.1"
   }
 }

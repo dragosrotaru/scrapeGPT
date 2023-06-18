@@ -1,0 +1,10 @@
+[
+  {
+    "index": 0,
+    "message": {
+      "role": "assistant",
+      "content": "async function fillFormAndSubmit(inputs) {\n  await page.type('#person_nm', inputs.lastName);\n  await page.type('#first_nm', inputs.firstName);\n  await page.select('#status-select', inputs.practisingStatus);\n  await page.select('#city-select', inputs.city);\n  await page.type('#location_nm', inputs.firmName);\n  await page.select('#gender-select', inputs.gender);\n  await page.select('#language-select', inputs.languages);\n  await page.select('#practice-areas-select', inputs.practiceAreas);\n  await Promise.all([\n    page.waitForNavigation(),\n    page.click('input[type=\"submit\"]')\n  ]);\n}"
+    },
+    "finish_reason": "stop"
+  }
+]

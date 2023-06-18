@@ -1,20 +1,53 @@
-# scraper
+# scrapeGPT
 
-1. Compile a list of websites with high value data
-2. detect the type of scraping that it needs
-   1. indexing, session management, evasion detection, chapacha
-   2. api or html
-3. write a crawler get html for all pages
+ScrapeGPT is a tool which autogenerates a web scraping sdk using machine learning.
 
-With GPT in an iterative loop:
+It is intended for data driven web interfaces which contain a lot of similar data.
+Usually these are websites which have a database behind the scenes. It is not intended
+for content scraping (for example blogs), although with some adjustment that can be done as well.
+
+This package contains a number of useful sub-modules which are useful in their own right for highly
+generalized tasks.
+
+## Architecture
+
+There are a number of manually intensive operations that this system automates.
+
+Given that you have the url to an indexing webpage or results page, the basic process is as follows:
+
+### Index
+
+- detect if the webpage contains a search form, results or a combination
+- detect if the webpage can be circumvented by url query parameters or if it has an api by looking at the network requests and responses
+- bypass scraping prevention techniques and interfering popups like cookie notices
+- generate code to fill in the search form parameters or url query
+- generate test data, tests and a well typed parameter schema
+- generate change detection code
+
+### Crawl
+
+- generate code to index the webpage by providing full coverage of the parameter space with a minimal number of search requests
+- manage thottling and crawling continuously over time
+
+### Process Results
+
+- generate code to extract the data from results list and detail pages
+- handle pagination
+- generate a validation schema and types, iteratively improving it as more data is available
+- generate tests and test data
+- generate change detection code
+- populate a cache and provide a well typed api over it
+
+## Process Results
+
+### Generating a validation Schema
 
 - pick a subset of the data based on the Tree Edit Distance algorithm (picking most dissimilar trees)
 - generate a validation schema and scraper for each member of this subset using a language model like chatGPT
 - merge the schema and scraper into one
 - scrape all of the data with the scraper
 - check the data againt the schema. for all exceptions:
-  - pass the exception to
-- ehance the schema with narrower types
+  - pass the exception to ehance the schema with narrower types
 
 genCrawler: url -> url -> HTML[]
 crawl: url -> HTML[]
@@ -27,7 +60,9 @@ validator: JSON -> bool
 
 1. write a schema using the basic JSON types
 
-# Reverse Engineering Mobile APIs
+## Additional Features
+
+### Reverse Engineering Mobile APIs
 
 https://medium.com/@navyab_66433/mitm-proxy-for-android-emulators-cf4c8e909aac
 
@@ -39,13 +74,12 @@ install certificate by going to mitm.it website and downloading, then going to s
 turn on and off airplane mode, restart
 try again
 
-## Automated Private API SDK gwen
+### Automated Generation of SDK around Private APIs
 
-1. run a session and capture all network requests (mobile + web)
+1. capture all network requests (mobile + web)
 2. sort requests based on likelyhood of value
 3. generate retriever functions
 4. generate parameter - response example dataset
 5. generate validation functions
-6. generate SDK
-7. generate Documentation
-8. generate throttling, change detection, identity management, etc scaffolding
+6. generate documented and typed SDK
+7. generate throttling, change detection, identity management, etc scaffolding

@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl-7SZoabUcAIIhhaSgunl3t1xON39F0",
+  "object": "chat.completion",
+  "created": 1687045212,
+  "model": "gpt-3.5-turbo-16k-0613",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\n  \"txt_search_type\": \"example_search_type\",\n  \"txt_last_nm\": \"example_last_name\",\n  \"txt_given_nm\": \"example_given_name\",\n  \"txt_city\": \"example_city\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 202,
+    "completion_tokens": 44,
+    "total_tokens": 246
+  }
+}

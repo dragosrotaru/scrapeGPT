@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl-7SZrc5vipo4Z1EvWbznkDDSLSGge6",
+  "object": "chat.completion",
+  "created": 1687045400,
+  "model": "gpt-3.5-turbo-16k-0613",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\n  \"txt_search_type\": \"Individual\",\n  \"txt_last_nm\": \"Smith\",\n  \"txt_given_nm\": \"John\",\n  \"txt_city\": \"Vancouver\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 234,
+    "completion_tokens": 38,
+    "total_tokens": 272
+  }
+}

@@ -1,0 +1,836 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<HTML>
+<HEAD>
+	
+	
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+
+    <LINK REL="stylesheet" TYPE="text/css" HREF="//fonts.googleapis.com/css?family=Open+Sans"/>
+    <LINK REL="stylesheet" HREF="/include/body/styles/style.css" />
+    <LINK TYPE="text/css" HREF="/include/body/styles/animate.css" REL="stylesheet" />
+    <LINK TYPE="text/css" HREF="/include/body/styles/datepicker-ui.css" REL="stylesheet" />
+
+
+	
+	
+	<LINK TYPE="text/css" HREF="/include/body/styles/site_styles.css" REL="StyleSheet">
+    
+	<LINK TYPE="text/css" HREF="/include/body/styles/site_styles_LSA.css" REL="StyleSheet">		    	
+    
+    
+    
+    <TITLE>Law Society of Alberta</TITLE>
+    <META Name="description" Content="">
+    <META Name="keywords" Content="">
+    
+    <SCRIPT TYPE="text/javascript" SRC="/include/body/js/jquery.0.11.min.js"></SCRIPT>
+    
+    <SCRIPT TYPE="text/javascript" SRC="/include/body/js/jquery-ui.js"></SCRIPT>
+    <SCRIPT TYPE="text/javascript" SRC="/include/body/js/scripts.js"></SCRIPT>
+    <SCRIPT TYPE="text/javascript" SRC="/include/body/js/jquery.dataTables.min.js"></SCRIPT>
+
+    
+    
+	<LINK HREF="/include/body/images/favicon.ico" REL="icon" TYPE="image/x-icon" />    
+
+</HEAD>
+
+   
+
+
+<BODY>
+
+<DIV ID="container">
+
+    <DIV ID="stickyMenu">
+        <DIV CLASS="top-bar">
+        
+			
+                <DIV CLASS="login-widget">
+                    
+                        <A HREF="https://lsa.memberpro.net/main/body.cfm?menu=login" TITLE="Sign In">
+                        <DIV CLASS="login-item">
+                            <SPAN CLASS="webcms-user-profile site-color"></SPAN>
+                            
+                            <DIV CLASS="login-item-text">Sign In</DIV>
+                        </DIV>                    
+                        </A>
+                    
+                    <DIV CLASS="pipe"></DIV>
+                	
+                        <A HREF="https://lsa.memberpro.net/main/body.cfm?menu=login&submenu=applyNow" TITLE="Apply">
+                        <DIV CLASS="login-item">
+                            <SPAN CLASS="webcms-signup site-color"></SPAN>
+                            
+                            <DIV CLASS="login-item-text">Apply</DIV>
+                        </DIV>                    
+                        </A>
+                    
+                    <DIV CLASS="pipe"></DIV>
+                	            
+            	</DIV>
+            
+                      
+        </DIV>
+
+        <DIV ID="banner">
+        
+            <DIV CLASS="logo">
+                
+                <A HREF="http://www.lawsociety.ab.ca" TARGET="_BLANK">
+                    <IMG SRC="/include/body/images/lsa_logo_v2.jpg" ALT="Return to Law Society of Alberta website" BORDER="0">
+                </A>
+                
+            </DIV>
+            
+            <nav aria-label="Main Menu" CLASS="menu-container">
+                
+                <UL ID="menu">
+                
+                <LI CLASS="left"><A class="main-menu-active" aria-current="page" HREF="https://lsa.memberpro.net/main/body.cfm?menu=directory">Find a Lawyer</A></LI>
+                
+                <LI CLASS="left"><A  HREF="https://lsa.memberpro.net/main/body.cfm?menu=contact">Contact Us</A></LI>
+                
+                </UL>
+                
+            </nav>                
+        </DIV>
+    </DIV>
+    
+
+	        
+    <DIV ID="sideMenu" CLASS="side-menu">
+    
+        <A ID="menu-expander-link" HREF="javascript:collapseMenu();" TITLE="Toggle Menu">
+            <DIV ID="menu-expander">
+                <SPAN ID="menu-expander-icon" CLASS="webcms-menu-close"></SPAN>
+            </DIV>
+        </A>
+        
+        <DIV ID="sideMenuLinks">
+                    
+        
+						<A HREF="https://lsa.memberpro.net/main/body.cfm?menu=directory&submenu=directoryPractisingMember&page_id=366"><div class="menu-item menu-parent menu-first-item menu-item-active">Lawyers</div></A>
+		                
+						<A HREF="https://lsa.memberpro.net/main/body.cfm?menu=directory&submenu=directoryArticlingStudent&page_id=374"><div class="menu-item menu-parent ">Students</div></A>
+		                
+        
+        </DIV>
+        
+    </DIV>
+    
+
+	<DIV ID="contentContainer" CLASS="content-container">
+    
+             
+	
+        <DIV CLASS="content-section">
+            <DIV CLASS="breadcrumbs">
+            
+                    <A CLASS="breadcrumb-link" HREF="https://lsa.memberpro.net/main/body.cfm?menu=directory"><SPAN CLASS="webcms-search site-color"></SPAN> Find a Lawyer</A><SPAN CLASS="webcms-next grey"></SPAN>
+                    <A CLASS="breadcrumb-link site-color" HREF="">Lawyers</A>
+                    
+                <DIV ID="instructions-arrow" CLASS="instructions-arrow">
+                        <A HREF="javascript:toggleInstructions();" TITLE="Collapse Instructions">
+                            <SPAN CLASS="webcms-info font-size-larger"></SPAN>
+                        </A>
+                </DIV>
+                
+                            
+            </DIV>   
+            
+            
+            <DIV ID="instructions" CLASS="instructions-body">
+                <DIV CLASS="instructions-header">
+                    <DIV CLASS="instructions-title"><DIV CLASS="instructions-title-icon webcms-info font-size-larger"></DIV> <DIV CLASS="instructions-title-text"></DIV></DIV>
+                </DIV>
+	            <DIV CLASS="instructions-text">
+	            	  <B>What this service includes:</B><BR>  <UL>  <LI>Name, business address and phone number, practising status and admission date for practising lawyers and students-at-law registered with the Law Society of Alberta.    <LI><A HREF="https://www.lawsociety.ab.ca/lawyers-and-students/membership-services/status-and-contact-information-changes/" TARGET="_blank">A practising status explanation</A>.  </UL>     <B>What this service does not include:</B><BR>    <UL>  <LI>Contact information for non-practising and suspended Alberta lawyers, or those lawyers who do not have a business address.           <LI>Any information about former or disbarred Alberta lawyers.        <LI>The disciplinary record for Alberta lawyers.   Disciplinary hearings and outcomes <A HREF="https://www.lawsociety.ab.ca/regulation/" TARGET="_blank">from 2006 to date are available on our website</A>.          <LI>Any disciplinary hearings that are pending in relation to an Alberta lawyer.   Upcoming hearings and citations served <A HREF="https://www.lawsociety.ab.ca/regulation/hearing-schedule/" TARGET="_blank"> can be found here</A>.  </UL>
+            	</DIV>
+            </DIV>  
+            
+            
+            <DIV ID="session-overlay"></DIV>
+            <DIV ID="session-message">
+              <DIV ID="session-message-top"><SPAN></SPAN></DIV>
+              <DIV ID="session-message-center"></DIV>
+              <DIV ID="session-message-right"><A HREF="javascript:closeSessionWindow();" TITLE="Close Window"><SPAN CLASS="session-close-icon webcms-close"></SPAN></A></DIV>
+            </DIV>            
+            
+
+          
+            <DIV ID="message">
+                <TABLE CELLSPACING="0" CELLPADDING="0">
+                    <TR>
+                        <TD ID="message-left"><SPAN></SPAN></TD>
+                        <TD ID="message-center"></TD>
+                        <TD ID="message-right"><A HREF="javascript:closeMessageArea('message');" TITLE="Close Message"><SPAN CLASS="close-icon webcms-close"></SPAN></A></TD>
+                    </TR>
+                </TABLE>
+            </DIV>           
+            
+            <DIV CLASS="content">
+            
+
+<SCRIPT LANGUAGE="JavaScript">
+	function nextSearch() {
+		document.Next.submit();
+	}
+
+	function clearSearch() {
+		document.Next.search_value.value=""
+		document.Next.search_value.focus();
+	}
+
+	function clearSelectSearch() {
+		document.Next.searchField.selectedIndex=0
+		document.Next.search_value.value=""
+		document.Next.search_value.focus();
+	}
+
+	function getFocus() {
+		document.Next.person_nm.focus();
+	}
+
+	function cancelSearch() {
+		alert('Search will be Cancelled');
+		window.stop();
+	}
+
+	function updateAccess() {
+		document.Next.mode.value = 'ACCESS';
+		document.Next.submit();
+	}
+
+</SCRIPT>
+
+
+
+
+
+                    
+
+    <script type="text/javascript">
+    	
+        $j(document).ready(function() {
+            setTimeout(function(){ 
+                openMessage('header', 'info', 'To find a Lawyer, enter your criteria and click Search.');
+            }, 100);
+        });
+    </script>
+    
+                        <FORM NAME="Next" ACTION="https://lsa.memberpro.net/main/body.cfm?menu=directory&submenu=directoryPractisingMember" METHOD="POST">
+                    
+
+                        <TABLE CLASS="table-auto" CELLPADDING=0 CELLSPACING=0>
+                         	<TR>
+                        		<TD>
+                        			
+                                    <!-- Search Options -->
+                                    <DIV CLASS="search-widget">
+                                    	
+                                        <DIV>
+                                        	<label for="person_nm">Last Name</label>
+                                            <INPUT CLASS="content-input search-input input-large" TYPE="TEXT" ID="person_nm" NAME="person_nm" PLACEHOLDER="Last Name" MAXLENGTH="25">
+                                        </DIV> 
+                                        <DIV>
+											<label for="first_nm">First Name</label>
+                                            <INPUT CLASS="content-input search-input input-large" TYPE="TEXT" ID="first_nm" NAME="first_nm" PLACEHOLDER="First Name" MAXLENGTH="25">
+                                        </DIV>                                       
+                                        
+
+                                        <DIV CLASS="dotted-line"></DIV>
+
+                                        
+                                            <DIV class="more-options-div">
+                                                <A ID="advanced-fields-label" class="more-options site-color" HREF="javascript:toggleAdvancedFields('advanced-fields');"><div id="advanced-fields-icon" class="more-options-icon">+</div>Advanced Search Options</A>
+                                            </DIV>
+
+                                            <DIV ID="advanced-fields" class="more-options-select-div">
+                                            	
+                                                
+                                                    <!-- Practising Status -->
+                                                    <DIV CLASS="search-indented">
+                                                        <A ID="status-label" class="more-options-dropdown" HREF="javascript:toggleAdvancedFields('status');">Practising Status</A>
+                                                    </DIV>
+
+                                                    <DIV ID="status" CLASS="search-indented search-collapsed">
+                                                        <DIV CLASS="input-select-white search-dropdown">
+                                                        <SELECT ID="status-select" CLASS="browser-select" size=3 NAME="member_status_cl">
+                                                            <OPTION VALUE="PRAC">Practising
+                                                            <OPTION VALUE="NPRA">Non-Practising
+                                                            <OPTION VALUE="SUSP">Suspended
+                                                            <OPTION VALUE="FORM">Former
+                                                        </SELECT>
+                                                        </DIV>
+                                                    </DIV>
+                                                    
+                                                    <DIV ID="status-spacer" CLASS="search-collapsed search-spacer"></DIV>
+                                                    
+                                                
+
+                                                    <!-- City/Town -->
+                                                    <DIV CLASS="search-indented">
+                                                        <A ID="city-label" class="more-options-dropdown" HREF="javascript:toggleAdvancedFields('city');">City/Town</A>
+                                                    </DIV>
+
+                                                    <DIV ID="city" CLASS="search-indented search-collapsed">
+                                                        <DIV CLASS="input-select-white search-dropdown">
+                                                            <SELECT ID="city-select" CLASS="browser-select" size=3 NAME="city_nm">
+                                                                
+                                                                    <OPTION VALUE=" Acheson"> Acheson</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Acheson">Acheson</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Airdrie">Airdrie</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Athabasca">Athabasca</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Banff">Banff</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Barrhead">Barrhead</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Beaumont">Beaumont</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Beaverlodge">Beaverlodge</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Blackfalds">Blackfalds</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Blairmore">Blairmore</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Bonnyville">Bonnyville</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Bow Island">Bow Island</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Boyle">Boyle</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Bragg Creek ">Bragg Creek </OPTION>
+                                                                
+                                                                    <OPTION VALUE="Brooks">Brooks</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Cadotte Lake">Cadotte Lake</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Calgary">Calgary</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Camrose">Camrose</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Canmore">Canmore</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Cardston">Cardston</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Carstairs">Carstairs</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Chestermere ">Chestermere </OPTION>
+                                                                
+                                                                    <OPTION VALUE="Claresholm">Claresholm</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Coaldale">Coaldale</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Cochrane">Cochrane</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Cold Lake">Cold Lake</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Coronation">Coronation</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Crossfield">Crossfield</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Darwell">Darwell</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Desert Blume ">Desert Blume </OPTION>
+                                                                
+                                                                    <OPTION VALUE="Devon">Devon</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Didsbury">Didsbury</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Drayton Valley">Drayton Valley</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Drumheller">Drumheller</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Edmonton">Edmonton</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Edson">Edson</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Enoch">Enoch</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Fairview">Fairview</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Falher">Falher</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Foothills">Foothills</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Fort McMurray">Fort McMurray</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Fort Saskatchewan">Fort Saskatchewan</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Fort Vermillion">Fort Vermillion</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Gibbons">Gibbons</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Grande Prairie">Grande Prairie</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Grimshaw">Grimshaw</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Hanna">Hanna</OPTION>
+                                                                
+                                                                    <OPTION VALUE="High Level">High Level</OPTION>
+                                                                
+                                                                    <OPTION VALUE="High Prairie">High Prairie</OPTION>
+                                                                
+                                                                    <OPTION VALUE="High River">High River</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Hinton">Hinton</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Hobbema">Hobbema</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Innisfail">Innisfail</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Jasper">Jasper</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Lac La Biche">Lac La Biche</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Lacombe">Lacombe</OPTION>
+                                                                
+                                                                    <OPTION VALUE="LaCrete">LaCrete</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Leduc">Leduc</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Leduc County">Leduc County</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Lethbridge">Lethbridge</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Lloydminster">Lloydminster</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Lloydmnister">Lloydmnister</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Ma-Me-O Beach">Ma-Me-O Beach</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Manning">Manning</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Maskwacis">Maskwacis</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Mayerthorpe">Mayerthorpe</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Medicine Hat">Medicine Hat</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Morinville">Morinville</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Nanton">Nanton</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Nisku">Nisku</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Okotoks">Okotoks</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Olds">Olds</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Onoway">Onoway</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Peace River">Peace River</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Penhold ">Penhold </OPTION>
+                                                                
+                                                                    <OPTION VALUE="Picture Butte">Picture Butte</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Pincher Creek">Pincher Creek</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Ponoka">Ponoka</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Priddis Greens ">Priddis Greens </OPTION>
+                                                                
+                                                                    <OPTION VALUE="Red Deer">Red Deer</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Red Deer County">Red Deer County</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Redwood Meadows">Redwood Meadows</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Rimbey">Rimbey</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Rocky Mountain House">Rocky Mountain House</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Rocky View County">Rocky View County</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Rockyview">Rockyview</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Sherwood Park">Sherwood Park</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Siksika Nation">Siksika Nation</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Slave Lake">Slave Lake</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Spruce Grove">Spruce Grove</OPTION>
+                                                                
+                                                                    <OPTION VALUE="St. Albert">St. Albert</OPTION>
+                                                                
+                                                                    <OPTION VALUE="St. Paul">St. Paul</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Stettler">Stettler</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Stony Plain">Stony Plain</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Strathmore">Strathmore</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Sturgeon County">Sturgeon County</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Sundre">Sundre</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Sylvan Lake">Sylvan Lake</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Taber">Taber</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Thorsby">Thorsby</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Three Hills">Three Hills</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Tofield">Tofield</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Trochu">Trochu</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Tsuu T'ina (Sarcee)">Tsuu T'ina (Sarcee)</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Two Hills">Two Hills</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Valleyview">Valleyview</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Vancouver">Vancouver</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Vegreville">Vegreville</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Vermilion">Vermilion</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Wainwright">Wainwright</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Warburg">Warburg</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Westerose">Westerose</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Westlock">Westlock</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Wetaskiwin">Wetaskiwin</OPTION>
+                                                                
+                                                                    <OPTION VALUE="Whitecourt">Whitecourt</OPTION>
+                                                                
+                                                            </SELECT>
+                                                        </DIV>
+                                                    </DIV>
+
+                                                    <DIV ID="city-spacer" CLASS="search-collapsed search-spacer"></DIV>
+                                                
+                                                    <!-- Firm/Company -->
+                                                    <DIV CLASS="search-indented">
+                                                        <A ID="firm-label" class="more-options-dropdown" HREF="javascript:toggleAdvancedFields('firm');"><label for="location_nm">Firm/Company Name</label></A>
+                                                    </DIV>
+
+                                                    <DIV ID="firm" CLASS="search-indented search-collapsed">
+                                                        <DIV>
+                                                            
+                                                                <INPUT TYPE="text" MAXLENGTH="100" ID="location_nm" NAME="location_nm" CLASS="content-input search-input input-large" PLACEHOLDER="Firm/Company Name">
+                                                            
+                                                        </DIV>
+                                                        <DIV ID="firm-list"></DIV>
+                                                    </DIV>
+
+                                                    <DIV ID="firm-spacer" CLASS="search-collapsed search-spacer"></DIV>
+                                                
+
+                                                    <!-- Gender -->
+                                                    <DIV CLASS="search-indented">
+                                                        <A ID="gender-label" class="more-options-dropdown" HREF="javascript:toggleAdvancedFields('gender');">Gender</A>
+                                                    </DIV>
+
+                                                    <DIV ID="gender" CLASS="search-indented search-collapsed">
+                                                        <DIV CLASS="input-select-white search-dropdown">
+                                                            <SELECT ID="gender-select" CLASS="browser-select" size=3 NAME="gender_cl">
+                                                                
+                                                                    <OPTION VALUE="F   ">Female</option>
+                                                                
+                                                                    <OPTION VALUE="M   ">Male</option>
+                                                                
+                                                                    <OPTION VALUE="NONB">Non-binary</option>
+                                                                
+                                                            </SELECT>
+                                                        </DIV>
+                                                    </DIV>
+
+                                                    <DIV ID="gender-spacer" CLASS="search-collapsed search-spacer"></DIV>
+                                                
+
+                                                    <!-- Languages Spoken -->
+                                                    <DIV CLASS="search-indented">
+                                                        <A ID="language-label" class="more-options-dropdown" HREF="javascript:toggleAdvancedFields('language');">Languages Spoken</A>
+                                                    </DIV>
+
+                                                    <DIV ID="language" CLASS="search-indented search-collapsed">
+                                                        <DIV CLASS="input-select-white search-dropdown">
+                                                            <SELECT ID="language-select" CLASS="browser-select" NAME="language_cl" size=3>
+                                                                
+                                                                    <OPTION VALUE="FREN">French</option>
+                                                                
+                                                                    <OPTION VALUE="AFRI">Afrikaans</option>
+                                                                
+                                                                    <OPTION VALUE="ALBA">Albanian</option>
+                                                                
+                                                                    <OPTION VALUE="ARAB">Arabic</option>
+                                                                
+                                                                    <OPTION VALUE="BAHA">Bahasa Malaysia</option>
+                                                                
+                                                                    <OPTION VALUE="BENG">Bengali</option>
+                                                                
+                                                                    <OPTION VALUE="BOSN">Bosnian</option>
+                                                                
+                                                                    <OPTION VALUE="CANT">Cantonese</option>
+                                                                
+                                                                    <OPTION VALUE="CHIN">Chinese</option>
+                                                                
+                                                                    <OPTION VALUE="CREE">Cree</option>
+                                                                
+                                                                    <OPTION VALUE="CROA">Croatian</option>
+                                                                
+                                                                    <OPTION VALUE="CZEC">Czechoslovakian</option>
+                                                                
+                                                                    <OPTION VALUE="DANI">Danish</option>
+                                                                
+                                                                    <OPTION VALUE="DUTC">Dutch</option>
+                                                                
+                                                                    <OPTION VALUE="FARS">Farsi</option>
+                                                                
+                                                                    <OPTION VALUE="PHIL">Filipino</option>
+                                                                
+                                                                    <OPTION VALUE="FUJI">Fujianese</option>
+                                                                
+                                                                    <OPTION VALUE="GERM">German</option>
+                                                                
+                                                                    <OPTION VALUE="GREE">Greek</option>
+                                                                
+                                                                    <OPTION VALUE="GUJA">Gujarati</option>
+                                                                
+                                                                    <OPTION VALUE="HATI">Haitian Creole</option>
+                                                                
+                                                                    <OPTION VALUE="HEBR">Hebrew</option>
+                                                                
+                                                                    <OPTION VALUE="HIND">Hindi</option>
+                                                                
+                                                                    <OPTION VALUE="HORK">Horkien</option>
+                                                                
+                                                                    <OPTION VALUE="HUNG">Hungarian</option>
+                                                                
+                                                                    <OPTION VALUE="IBOL">Ibo</option>
+                                                                
+                                                                    <OPTION VALUE="INDO">Indonesia</option>
+                                                                
+                                                                    <OPTION VALUE="ITAL">Italian</option>
+                                                                
+                                                                    <OPTION VALUE="JAPA">Japanese</option>
+                                                                
+                                                                    <OPTION VALUE="KATC">Katchi</option>
+                                                                
+                                                                    <OPTION VALUE="KORE">Korean</option>
+                                                                
+                                                                    <OPTION VALUE="KUTC">Kutchi</option>
+                                                                
+                                                                    <OPTION VALUE="LTIN">Latin</option>
+                                                                
+                                                                    <OPTION VALUE="LITH">Lithuanian</option>
+                                                                
+                                                                    <OPTION VALUE="MAND">Mandarin</option>
+                                                                
+                                                                    <OPTION VALUE="MARA">Marathi</option>
+                                                                
+                                                                    <OPTION VALUE="NORW">Norwegian</option>
+                                                                
+                                                                    <OPTION VALUE="PASH">Pashto</option>
+                                                                
+                                                                    <OPTION VALUE="PERS">Persian</option>
+                                                                
+                                                                    <OPTION VALUE="POLI">Polish</option>
+                                                                
+                                                                    <OPTION VALUE="PORT">Portuguese</option>
+                                                                
+                                                                    <OPTION VALUE="PUNJ">Punjabi</option>
+                                                                
+                                                                    <OPTION VALUE="PUTO">Putonghua</option>
+                                                                
+                                                                    <OPTION VALUE="ROMA">Romanian</option>
+                                                                
+                                                                    <OPTION VALUE="RUSS">Russian</option>
+                                                                
+                                                                    <OPTION VALUE="SERB">Serbian</option>
+                                                                
+                                                                    <OPTION VALUE="SIGN">Sign Language</option>
+                                                                
+                                                                    <OPTION VALUE="SLOV">Slovak</option>
+                                                                
+                                                                    <OPTION VALUE="SLOE">Slovene</option>
+                                                                
+                                                                    <OPTION VALUE="SPAN">Spanish</option>
+                                                                
+                                                                    <OPTION VALUE="SWAH">Swahili</option>
+                                                                
+                                                                    <OPTION VALUE="SWED">Swedish</option>
+                                                                
+                                                                    <OPTION VALUE="TAGA">Tagalog</option>
+                                                                
+                                                                    <OPTION VALUE="TAMI">Tamil (South Indian)</option>
+                                                                
+                                                                    <OPTION VALUE="THAI">Thai</option>
+                                                                
+                                                                    <OPTION VALUE="TUMB">Tumbuka</option>
+                                                                
+                                                                    <OPTION VALUE="TURK">Turkish</option>
+                                                                
+                                                                    <OPTION VALUE="UKRA">Ukrainian</option>
+                                                                
+                                                                    <OPTION VALUE="URDU">Urdu</option>
+                                                                
+                                                                    <OPTION VALUE="VIET">Vietnamese</option>
+                                                                
+                                                                    <OPTION VALUE="YIDD">Yiddish</option>
+                                                                
+                                                                    <OPTION VALUE="YORU">Yoruba</option>
+                                                                
+                                                                    <OPTION VALUE="YUGO">Yugoslavian</option>
+                                                                
+                                                                    <OPTION VALUE="ZULU">Zulu</option>
+                                                                
+                                                            </SELECT>
+                                                        </DIV>
+                                                    </DIV>
+                                                    
+                                                    <DIV ID="language-spacer" CLASS="search-collapsed search-spacer"></DIV>
+                                                
+
+                                                    <!-- Practice Areas -->
+                                                    <DIV CLASS="search-indented">
+                                                        <A ID="practice-areas-label" class="more-options-dropdown" HREF="javascript:toggleAdvancedFields('practice-areas');">Practice Areas</A>
+                                                    </DIV>
+
+                                                    <DIV ID="practice-areas" CLASS="search-indented search-collapsed">
+                                                        <DIV CLASS="input-select-white search-dropdown">
+                                                            <SELECT ID="practice-areas-select" CLASS="browser-select" NAME="area_ds" size=3>
+                                                                
+                                                                    <OPTION VALUE=""></option>
+                                                                
+                                                                    <OPTION VALUE="Aboriginal">Aboriginal</option>
+                                                                
+                                                                    <OPTION VALUE="Administrative/Boards/Tribunals">Administrative/Boards/Tribunals</option>
+                                                                
+                                                                    <OPTION VALUE="Arbitration">Arbitration</option>
+                                                                
+                                                                    <OPTION VALUE="Bankruptcy/Insolvency/Receivership">Bankruptcy/Insolvency/Receivership</option>
+                                                                
+                                                                    <OPTION VALUE="Civil Litigation">Civil Litigation</option>
+                                                                
+                                                                    <OPTION VALUE="Commercial">Commercial</option>
+                                                                
+                                                                    <OPTION VALUE="Corporate">Corporate</option>
+                                                                
+                                                                    <OPTION VALUE="Criminal">Criminal</option>
+                                                                
+                                                                    <OPTION VALUE="Employment/Labour">Employment/Labour</option>
+                                                                
+                                                                    <OPTION VALUE="Entertainment">Entertainment</option>
+                                                                
+                                                                    <OPTION VALUE="Environmental">Environmental</option>
+                                                                
+                                                                    <OPTION VALUE="Estate Planning and Administration">Estate Planning and Administration</option>
+                                                                
+                                                                    <OPTION VALUE="Immigration">Immigration</option>
+                                                                
+                                                                    <OPTION VALUE="Intellectual Property">Intellectual Property</option>
+                                                                
+                                                                    <OPTION VALUE="International Business">International Business</option>
+                                                                
+                                                                    <OPTION VALUE="Matrimonial/Family">Matrimonial/Family</option>
+                                                                
+                                                                    <OPTION VALUE="Mediation">Mediation</option>
+                                                                
+                                                                    <OPTION VALUE="Other">Other</option>
+                                                                
+                                                                    <OPTION VALUE="Real Estate Conveyancing">Real Estate Conveyancing</option>
+                                                                
+                                                                    <OPTION VALUE="Tax">Tax</option>
+                                                                
+                                                            </SELECT>
+                                                        </DIV>
+
+                                                        <BR>
+
+                                                        <LABEL><INPUT CLASS="checkbox"  TYPE="CHECKBOX" NAME="LSR_in" VALUE="Y"><SPAN TITLE='Only Lawyers who offer a Limited Scope Retainer for this Practice Area'></SPAN>Limited Scope Retainer</LABEL>
+                                                    </DIV>
+
+                                                    <DIV ID="practice-areas-spacer" CLASS="search-collapsed search-spacer"></DIV>
+                                                
+                                            </DIV>
+                                            
+		                                    
+		                                    
+											
+
+                                        <DIV CLASS="search-button">
+                                            <A HREF="javascript:nextSearch()" CLASS="primary-button site-button-color">Search<SPAN CLASS="webcms-search"></SPAN></A>
+                                        </DIV>
+                                        
+                                    </DIV>
+                                    
+                            	</TD>
+                        	</TR>
+                        </table>
+
+                    	
+                            <INPUT TYPE="HIDDEN" NAME="mode" VALUE="search">
+                        
+                    </FORM>
+                    
+            </DIV>
+            
+            <DIV ID="footerMessage">
+                <TABLE CELLSPACING="0" CELLPADDING="0">
+                    <TR>
+                        <TD ID="footer-message-left"><SPAN></SPAN></TD>
+                        <TD ID="footer-message-center"></TD>
+                        <TD ID="footer-message-right"><A HREF="javascript:closeMessageArea('footermessage');" TITLE="Close Message"><SPAN CLASS="close-icon webcms-close"></SPAN></A></TD>
+                    </TR>
+                </TABLE>
+            </DIV>             
+		</DIV>
+    </DIV>
+
+      
+    
+    <DIV STYLE="clear: both;"></DIV>
+    
+    <DIV ID="footer">
+        <DIV CLASS="footer">
+            
+            <DIV CLASS="footer-left">
+                Powered by <A TARGET="_blank" HREF="http://www.memberpro.net/professionals/" METHOD="POST" TITLE="MemberPro&reg for Professionals">MemberPro&reg for Professionals <IMG SRC="/include/body/images/memberpro-logo.png" ALT=""/></A>
+            </DIV>
+            	
+            <DIV CLASS="footer-right">
+                
+                <SPAN class="footer-link-nopipe">
+                	&copy;2023 Law Society of Alberta. All rights reserved.&nbsp;&nbsp; <A HREF="https://lsa.memberpro.net/main/body.cfm?menu=privacy" TITLE="Privacy Statement">Privacy Statement</A>
+						
+                </SPAN>
+                
+            </DIV>
+        </DIV>
+    </DIV>
+   
+    <A NAME="bottom"></A>
+
+    <A HREF="#top" CLASS="scroll-link" TITLE="Scroll to Top"><DIV ID="top-arrow" CLASS="scroll-to-top"><DIV CLASS="scroll-offset webcms-up"></DIV></DIV></A>
+    <A HREF="#bottom" CLASS="scroll-link" TITLE="Scroll to Bottom"><DIV ID="bottom-arrow" CLASS="scroll-to-bottom"><DIV CLASS="scroll-offset webcms-down"></DIV></DIV></A>
+    
+    
+</DIV>
+
+</BODY>
+ 
+</HTML>

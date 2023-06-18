@@ -1,0 +1,435 @@
+<html lang="en">
+  <body>
+    <a
+      href="https://lsa.memberpro.net/main/body.cfm?menu=login"
+      title="Sign In"
+    >
+      Sign In </a
+    ><a
+      href="https://lsa.memberpro.net/main/body.cfm?menu=login&amp;submenu=applyNow"
+      title="Apply"
+    >
+      Apply </a
+    ><a href="http://www.lawsociety.ab.ca" target="_BLANK"></a>
+    <div id="sideMenu">
+      <a
+        id="menu-expander-link"
+        href="javascript:collapseMenu();"
+        title="Toggle Menu"
+      ></a
+      ><a>Lawyers</a><a>Students</a>
+    </div>
+    <div id="contentContainer">
+      <a href="https://lsa.memberpro.net/main/body.cfm?menu=directory">
+        Find a Lawyer</a
+      ><a href="">Lawyers</a>
+      <div id="instructions-arrow">
+        <a
+          href="javascript:toggleInstructions();"
+          title="Collapse Instructions"
+        ></a>
+      </div>
+      <div id="instructions">
+        <b>What this service includes:</b>
+        <ul>
+          <li>
+            Name, business address and phone number, practising status and
+            admission date for practising lawyers and students-at-law registered
+            with the Law Society of Alberta.
+          </li>
+          <li><a target="_blank">A practising status explanation</a>.</li>
+        </ul>
+        <b>What this service does not include:</b>
+        <ul>
+          <li>
+            Contact information for non-practising and suspended Alberta
+            lawyers, or those lawyers who do not have a business address.
+          </li>
+          <li>Any information about former or disbarred Alberta lawyers.</li>
+          <li>
+            The disciplinary record for Alberta lawyers. Disciplinary hearings
+            and outcomes
+            <a href="https://www.lawsociety.ab.ca/regulation/" target="_blank"
+              >from 2006 to date are available on our website</a
+            >.
+          </li>
+          <li>
+            Any disciplinary hearings that are pending in relation to an Alberta
+            lawyer. Upcoming hearings and citations served
+            <a
+              href="https://www.lawsociety.ab.ca/regulation/hearing-schedule/"
+              target="_blank"
+            >
+              can be found here</a
+            >.
+          </li>
+        </ul>
+      </div>
+      <table cellspacing="0" cellpadding="0">
+        <tbody>
+          <tr>
+            <td id="message-left"></td>
+            <td id="message-right"></td>
+          </tr>
+        </tbody>
+      </table>
+      <form name="Next" method="POST">
+        <table cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td>
+                <div>
+                  <label for="person_nm">Last Name</label
+                  ><input
+                    type="TEXT"
+                    id="person_nm"
+                    name="person_nm"
+                    placeholder="Last Name"
+                    maxlength="25"
+                  />
+                </div>
+                <div>
+                  <label for="first_nm">First Name</label
+                  ><input
+                    type="TEXT"
+                    id="first_nm"
+                    name="first_nm"
+                    placeholder="First Name"
+                    maxlength="25"
+                  />
+                </div>
+                <a
+                  id="advanced-fields-label"
+                  href="javascript:toggleAdvancedFields('advanced-fields');"
+                  ><div id="advanced-fields-icon">+</div>
+                  Advanced Search Options</a
+                >
+                <div id="advanced-fields">
+                  <a
+                    id="status-label"
+                    href="javascript:toggleAdvancedFields('status');"
+                    >Practising Status</a
+                  >
+                  <div id="status">
+                    <select id="status-select" size="3" name="member_status_cl">
+                      <option value="PRAC">Practising</option>
+                      <option value="NPRA">Non-Practising</option>
+                      <option value="SUSP">Suspended</option>
+                      <option value="FORM">Former</option>
+                    </select>
+                  </div>
+                  <a
+                    id="city-label"
+                    href="javascript:toggleAdvancedFields('city');"
+                    >City/Town</a
+                  >
+                  <div id="city">
+                    <select id="city-select" size="3" name="city_nm">
+                      <option value=" Acheson">Acheson</option>
+                      <option value="Acheson">Acheson</option>
+                      <option value="Airdrie">Airdrie</option>
+                      <option value="Athabasca">Athabasca</option>
+                      <option value="Banff">Banff</option>
+                      <option value="Barrhead">Barrhead</option>
+                      <option value="Beaumont">Beaumont</option>
+                      <option value="Beaverlodge">Beaverlodge</option>
+                      <option value="Blackfalds">Blackfalds</option>
+                      <option value="Blairmore">Blairmore</option>
+                      <option value="Bonnyville">Bonnyville</option>
+                      <option value="Bow Island">Bow Island</option>
+                      <option value="Boyle">Boyle</option>
+                      <option value="Bragg Creek ">Bragg Creek</option>
+                      <option value="Brooks">Brooks</option>
+                      <option value="Cadotte Lake">Cadotte Lake</option>
+                      <option value="Calgary">Calgary</option>
+                      <option value="Camrose">Camrose</option>
+                      <option value="Canmore">Canmore</option>
+                      <option value="Cardston">Cardston</option>
+                      <option value="Carstairs">Carstairs</option>
+                      <option value="Chestermere ">Chestermere</option>
+                      <option value="Claresholm">Claresholm</option>
+                      <option value="Coaldale">Coaldale</option>
+                      <option value="Cochrane">Cochrane</option>
+                      <option value="Cold Lake">Cold Lake</option>
+                      <option value="Coronation">Coronation</option>
+                      <option value="Crossfield">Crossfield</option>
+                      <option value="Darwell">Darwell</option>
+                      <option value="Desert Blume ">Desert Blume</option>
+                      <option value="Devon">Devon</option>
+                      <option value="Didsbury">Didsbury</option>
+                      <option value="Drayton Valley">Drayton Valley</option>
+                      <option value="Drumheller">Drumheller</option>
+                      <option value="Edmonton">Edmonton</option>
+                      <option value="Edson">Edson</option>
+                      <option value="Enoch">Enoch</option>
+                      <option value="Fairview">Fairview</option>
+                      <option value="Falher">Falher</option>
+                      <option value="Foothills">Foothills</option>
+                      <option value="Fort McMurray">Fort McMurray</option>
+                      <option value="Fort Saskatchewan">
+                        Fort Saskatchewan
+                      </option>
+                      <option value="Fort Vermillion">Fort Vermillion</option>
+                      <option value="Gibbons">Gibbons</option>
+                      <option value="Grande Prairie">Grande Prairie</option>
+                      <option value="Grimshaw">Grimshaw</option>
+                      <option value="Hanna">Hanna</option>
+                      <option value="High Level">High Level</option>
+                      <option value="High Prairie">High Prairie</option>
+                      <option value="High River">High River</option>
+                      <option value="Hinton">Hinton</option>
+                      <option value="Hobbema">Hobbema</option>
+                      <option value="Innisfail">Innisfail</option>
+                      <option value="Jasper">Jasper</option>
+                      <option value="Lac La Biche">Lac La Biche</option>
+                      <option value="Lacombe">Lacombe</option>
+                      <option value="LaCrete">LaCrete</option>
+                      <option value="Leduc">Leduc</option>
+                      <option value="Leduc County">Leduc County</option>
+                      <option value="Lethbridge">Lethbridge</option>
+                      <option value="Lloydminster">Lloydminster</option>
+                      <option value="Lloydmnister">Lloydmnister</option>
+                      <option value="Ma-Me-O Beach">Ma-Me-O Beach</option>
+                      <option value="Manning">Manning</option>
+                      <option value="Maskwacis">Maskwacis</option>
+                      <option value="Mayerthorpe">Mayerthorpe</option>
+                      <option value="Medicine Hat">Medicine Hat</option>
+                      <option value="Morinville">Morinville</option>
+                      <option value="Nanton">Nanton</option>
+                      <option value="Nisku">Nisku</option>
+                      <option value="Okotoks">Okotoks</option>
+                      <option value="Olds">Olds</option>
+                      <option value="Onoway">Onoway</option>
+                      <option value="Peace River">Peace River</option>
+                      <option value="Penhold ">Penhold</option>
+                      <option value="Picture Butte">Picture Butte</option>
+                      <option value="Pincher Creek">Pincher Creek</option>
+                      <option value="Ponoka">Ponoka</option>
+                      <option value="Priddis Greens ">Priddis Greens</option>
+                      <option value="Red Deer">Red Deer</option>
+                      <option value="Red Deer County">Red Deer County</option>
+                      <option value="Redwood Meadows">Redwood Meadows</option>
+                      <option value="Rimbey">Rimbey</option>
+                      <option value="Rocky Mountain House">
+                        Rocky Mountain House
+                      </option>
+                      <option value="Rocky View County">
+                        Rocky View County
+                      </option>
+                      <option value="Rockyview">Rockyview</option>
+                      <option value="Sherwood Park">Sherwood Park</option>
+                      <option value="Siksika Nation">Siksika Nation</option>
+                      <option value="Slave Lake">Slave Lake</option>
+                      <option value="Spruce Grove">Spruce Grove</option>
+                      <option value="St. Albert">St. Albert</option>
+                      <option value="St. Paul">St. Paul</option>
+                      <option value="Stettler">Stettler</option>
+                      <option value="Stony Plain">Stony Plain</option>
+                      <option value="Strathmore">Strathmore</option>
+                      <option value="Sturgeon County">Sturgeon County</option>
+                      <option value="Sundre">Sundre</option>
+                      <option value="Sylvan Lake">Sylvan Lake</option>
+                      <option value="Taber">Taber</option>
+                      <option value="Thorsby">Thorsby</option>
+                      <option value="Three Hills">Three Hills</option>
+                      <option value="Tofield">Tofield</option>
+                      <option value="Trochu">Trochu</option>
+                      <option value="Tsuu T'ina (Sarcee)">
+                        Tsuu T'ina (Sarcee)
+                      </option>
+                      <option value="Two Hills">Two Hills</option>
+                      <option value="Valleyview">Valleyview</option>
+                      <option value="Vancouver">Vancouver</option>
+                      <option value="Vegreville">Vegreville</option>
+                      <option value="Vermilion">Vermilion</option>
+                      <option value="Wainwright">Wainwright</option>
+                      <option value="Warburg">Warburg</option>
+                      <option value="Westerose">Westerose</option>
+                      <option value="Westlock">Westlock</option>
+                      <option value="Wetaskiwin">Wetaskiwin</option>
+                      <option value="Whitecourt">Whitecourt</option>
+                    </select>
+                  </div>
+                  <a
+                    id="firm-label"
+                    href="javascript:toggleAdvancedFields('firm');"
+                    ><label for="location_nm">Firm/Company Name</label></a
+                  >
+                  <div id="firm">
+                    <div>
+                      <input
+                        type="text"
+                        maxlength="100"
+                        id="location_nm"
+                        name="location_nm"
+                        placeholder="Firm/Company Name"
+                      />
+                    </div>
+                  </div>
+                  <a
+                    id="gender-label"
+                    href="javascript:toggleAdvancedFields('gender');"
+                    >Gender</a
+                  >
+                  <div id="gender">
+                    <select id="gender-select" size="3" name="gender_cl">
+                      <option value="F ">Female</option>
+                      <option value="M ">Male</option>
+                      <option value="NONB">Non-binary</option>
+                    </select>
+                  </div>
+                  <a
+                    id="language-label"
+                    href="javascript:toggleAdvancedFields('language');"
+                    >Languages Spoken</a
+                  >
+                  <div id="language">
+                    <select id="language-select" name="language_cl" size="3">
+                      <option value="FREN">French</option>
+                      <option value="AFRI">Afrikaans</option>
+                      <option value="ALBA">Albanian</option>
+                      <option value="ARAB">Arabic</option>
+                      <option value="BAHA">Bahasa Malaysia</option>
+                      <option value="BENG">Bengali</option>
+                      <option value="BOSN">Bosnian</option>
+                      <option value="CANT">Cantonese</option>
+                      <option value="CHIN">Chinese</option>
+                      <option value="CREE">Cree</option>
+                      <option value="CROA">Croatian</option>
+                      <option value="CZEC">Czechoslovakian</option>
+                      <option value="DANI">Danish</option>
+                      <option value="DUTC">Dutch</option>
+                      <option value="FARS">Farsi</option>
+                      <option value="PHIL">Filipino</option>
+                      <option value="FUJI">Fujianese</option>
+                      <option value="GERM">German</option>
+                      <option value="GREE">Greek</option>
+                      <option value="GUJA">Gujarati</option>
+                      <option value="HATI">Haitian Creole</option>
+                      <option value="HEBR">Hebrew</option>
+                      <option value="HIND">Hindi</option>
+                      <option value="HORK">Horkien</option>
+                      <option value="HUNG">Hungarian</option>
+                      <option value="IBOL">Ibo</option>
+                      <option value="INDO">Indonesia</option>
+                      <option value="ITAL">Italian</option>
+                      <option value="JAPA">Japanese</option>
+                      <option value="KATC">Katchi</option>
+                      <option value="KORE">Korean</option>
+                      <option value="KUTC">Kutchi</option>
+                      <option value="LTIN">Latin</option>
+                      <option value="LITH">Lithuanian</option>
+                      <option value="MAND">Mandarin</option>
+                      <option value="MARA">Marathi</option>
+                      <option value="NORW">Norwegian</option>
+                      <option value="PASH">Pashto</option>
+                      <option value="PERS">Persian</option>
+                      <option value="POLI">Polish</option>
+                      <option value="PORT">Portuguese</option>
+                      <option value="PUNJ">Punjabi</option>
+                      <option value="PUTO">Putonghua</option>
+                      <option value="ROMA">Romanian</option>
+                      <option value="RUSS">Russian</option>
+                      <option value="SERB">Serbian</option>
+                      <option value="SIGN">Sign Language</option>
+                      <option value="SLOV">Slovak</option>
+                      <option value="SLOE">Slovene</option>
+                      <option value="SPAN">Spanish</option>
+                      <option value="SWAH">Swahili</option>
+                      <option value="SWED">Swedish</option>
+                      <option value="TAGA">Tagalog</option>
+                      <option value="TAMI">Tamil (South Indian)</option>
+                      <option value="THAI">Thai</option>
+                      <option value="TUMB">Tumbuka</option>
+                      <option value="TURK">Turkish</option>
+                      <option value="UKRA">Ukrainian</option>
+                      <option value="URDU">Urdu</option>
+                      <option value="VIET">Vietnamese</option>
+                      <option value="YIDD">Yiddish</option>
+                      <option value="YORU">Yoruba</option>
+                      <option value="YUGO">Yugoslavian</option>
+                      <option value="ZULU">Zulu</option>
+                    </select>
+                  </div>
+                  <a
+                    id="practice-areas-label"
+                    href="javascript:toggleAdvancedFields('practice-areas');"
+                    >Practice Areas</a
+                  >
+                  <div id="practice-areas">
+                    <select id="practice-areas-select" name="area_ds" size="3">
+                      <option value="Aboriginal">Aboriginal</option>
+                      <option value="Administrative/Boards/Tribunals">
+                        Administrative/Boards/Tribunals
+                      </option>
+                      <option value="Arbitration">Arbitration</option>
+                      <option value="Bankruptcy/Insolvency/Receivership">
+                        Bankruptcy/Insolvency/Receivership
+                      </option>
+                      <option value="Civil Litigation">Civil Litigation</option>
+                      <option value="Commercial">Commercial</option>
+                      <option value="Corporate">Corporate</option>
+                      <option value="Criminal">Criminal</option>
+                      <option value="Employment/Labour">
+                        Employment/Labour
+                      </option>
+                      <option value="Entertainment">Entertainment</option>
+                      <option value="Environmental">Environmental</option>
+                      <option value="Estate Planning and Administration">
+                        Estate Planning and Administration
+                      </option>
+                      <option value="Immigration">Immigration</option>
+                      <option value="Intellectual Property">
+                        Intellectual Property
+                      </option>
+                      <option value="International Business">
+                        International Business
+                      </option>
+                      <option value="Matrimonial/Family">
+                        Matrimonial/Family
+                      </option>
+                      <option value="Mediation">Mediation</option>
+                      <option value="Other">Other</option>
+                      <option value="Real Estate Conveyancing">
+                        Real Estate Conveyancing
+                      </option>
+                      <option value="Tax">Tax</option></select
+                    ><label
+                      ><input type="CHECKBOX" name="LSR_in" value="Y" />Limited
+                      Scope Retainer</label
+                    >
+                  </div>
+                </div>
+                <a href="javascript:nextSearch()">Search</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <input type="HIDDEN" name="mode" value="search" />
+      </form>
+      <table cellspacing="0" cellpadding="0">
+        <tbody>
+          <tr>
+            <td id="footer-message-left"></td>
+            <td id="footer-message-right"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    Powered by
+    <a
+      target="_blank"
+      href="http://www.memberpro.net/professionals/"
+      method="POST"
+      title="MemberPro® for Professionals"
+      >MemberPro® for Professionals
+    </a>
+    ©2023 Law Society of Alberta. All rights reserved.&nbsp;&nbsp;
+    <a
+      href="https://lsa.memberpro.net/main/body.cfm?menu=privacy"
+      title="Privacy Statement"
+      >Privacy Statement</a
+    ><a href="#top" title="Scroll to Top"></a
+    ><a href="#bottom" title="Scroll to Bottom"></a>
+  </body>
+</html>
