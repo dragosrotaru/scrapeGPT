@@ -1,0 +1,28 @@
+{
+    "parser": "typescript",
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "semi": true,
+    "overrides": [
+        {
+            "files": "*.json",
+            "options": { "parser": "json" }
+        },
+        {
+            "files": "*.{ts,tsx}",
+            "options": { "parser": "typescript" }
+        },
+        {
+            "files": "*.{js,jsx}",
+            "options": { "parser": "babel" }
+        },
+        {
+            "files": "*.md",
+            "options": { "parser": "markdown" }
+        },
+        {
+            "files": "*.{html}",
+            "options": { "parser": "html" }
+        }
+    ]
+}
