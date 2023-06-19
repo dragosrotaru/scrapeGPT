@@ -2,7 +2,5 @@
 node_modules
 build
 user
-apks
-dex-tools-2.1
-*.cer
+mobile
 data
