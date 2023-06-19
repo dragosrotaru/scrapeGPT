@@ -31,5 +31,5 @@
         "skipLibCheck": false
     },
     "include": ["src/**/*"],
-    "exclude": ["node_modules", "build", "experiments"]
+    "exclude": ["node_modules", "build", "data"]
 }
