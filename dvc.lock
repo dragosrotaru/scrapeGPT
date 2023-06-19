@@ -1,0 +1,4 @@
+schema: '2.0'
+stages:
+  compress:
+    cmd: npm start -- compress -u http://localhost -i alpha

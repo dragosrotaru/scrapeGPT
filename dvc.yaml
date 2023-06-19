@@ -1,0 +1,3 @@
+stages:
+  compress:
+    cmd: npm start -- compress -u http://localhost -i alpha
