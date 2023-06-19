@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
-import { ESLint } from "eslint";
 import { Configuration, OpenAIApi } from "openai";
+import { eslint } from "../lint";
 
 dotenv.config();
 if (!process.env["OPENAI"]) {
@@ -100,26 +100,81 @@ const extractJSONFromResponse = (response: string) => {
     return JSON.parse(matchRegex(codeBlockRegex("json"), response) || response);
 };
 
-const wrapCode = (url: string, code: string, params: unknown) => {
+const wrapCode = (code: string) => {
     return `
     const puppeteer = require("puppeteer");
     
-    (async () => {
+    module.exports.default = async (url, params) => {
         try {
-            const url = "${url}";
-            const params = ${JSON.stringify(params, null, 2)};
             const browser = await puppeteer.launch({ headless: false });
             const page = await browser.newPage();
             page.setViewport({ width: 1400, height: 1000 });
             page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome");
             await page.goto(url, { waitUntil: "networkidle2" });
-            ${code}
-            await fillFormAndSubmit(params);
-            return "success"
+
+            const events = {
+                pageChanges: [],
+                formSubmissions: [],
+                xhrRequests: [],
+            };
+
+            await page.setRequestInterception(true);
+
+            page.on("framenavigated", (frame) => {
+                events.pageChanges.push({
+                    url: frame.url(),
+                    status: frame._navigationResponse
+                        ? frame._navigationResponse.status()
+                        : null,
+                });
+            });
+
+            page.on("request", (interceptedRequest) => {
+                if (
+                    interceptedRequest._method === "POST" &&
+                    interceptedRequest._postData
+                ) {
+                    events.formSubmissions.push({
+                        url: interceptedRequest.url(),
+                        postData: interceptedRequest._postData,
+                        status: interceptedRequest._response
+                            ? interceptedRequest._response.status()
+                            : null,
+                    });
+                }
+                interceptedRequest.continue();
+            });
+
+            page.on("response", (response) => {
+                const request = response.request();
+                if (request.resourceType() === "xhr") {
+                    events.xhrRequests.push({
+                        url: request.url(),
+                        status: response.status(),
+                    });
+                }
+            });
+
+            try {
+                ${code}
+                await fillFormAndSubmit(params);
+            } catch (error) {
+                return { events, innerError: error.message };
+            }
+    
+            await Promise.race([
+                page.waitForNetworkIdle({ waitUntil: "networkidle0" }),
+                page.waitForTimeout(5000)
+            ]);
+            const newUrl = page.url();
+    
+            browser.close();
+    
+            return { events, url: newUrl };
         } catch (error) {
-            return error;
+            return { outerError: error.message };
         }
-    })();
+    });
 `;
 };
 
@@ -167,17 +222,9 @@ export const generate = async (
     }
 
     console.log("linting code");
-    const eslint = new ESLint({
-        fix: true,
-        overrideConfig: {
-            rules: {
-                "no-inner-declarations": "off",
-                "@typescript-eslint/no-var-requires": "off",
-            },
-        },
-    });
-    const lintResults = await eslint.lintText(wrapCode(url, code, params));
-    const wrapped = lintResults[0].output as string;
+    const lintResults = await eslint.lintText(wrapCode(code));
+    // TODO fix prettier
+    const wrapped = lintResults[0].output as string; // prettier.format(lintResults[0].output as string, {tabWidth: 4, parser: "babel"});
 
     return { code, params, wrapped, lint: lintResults, meta };
 };

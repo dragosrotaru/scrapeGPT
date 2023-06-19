@@ -4,6 +4,11 @@ import fs from "fs";
 import path from "path";
 import { generate } from "./forms/generate";
 import { compress } from "./html/compress";
+import { generateAST } from "./json/ast";
+import {
+    generateValidatorDynamic,
+    generateValidatorWrapped,
+} from "./json/generate";
 import { retrieve } from "./retrieve";
 
 const createID = () => randomUUID().slice(0, 8);
@@ -24,10 +29,12 @@ const validURL = (s: string) => {
 };
 
 const dirPath = (url: string, id?: string) =>
-    path.join("experiments/data", urlToPath(url), id || createID());
+    path.join("experiments", urlToPath(url), id || createID());
 const originalFilePath = (dir: string) => path.join(dir, "index.html");
 const metaFilePath = (dir: string) => path.join(dir, "meta.json");
 const compressedFilePath = (dir: string) => path.join(dir, "compressed.html");
+const paramsFilePath = (dir: string) => path.join(dir, "params.json");
+const schemaFilePath = (dir: string) => path.join(dir, "schema.js");
 
 const cli = program
     .name("scrapeGPT")
@@ -37,6 +44,7 @@ const cli = program
 const retrieveCMD = cli.command("retrieve");
 const compressCMD = cli.command("compress");
 const generateCMD = cli.command("generate");
+const schemaCMD = cli.command("schema");
 
 retrieveCMD
     .requiredOption("-u, --url <url>", "Website url to retrieve")
@@ -204,7 +212,7 @@ generateCMD
         }
 
         if (params) {
-            const fileName = path.join(dir, "params.json");
+            const fileName = paramsFilePath(dir);
             fs.writeFileSync(fileName, JSON.stringify(params, null, 2));
         }
 
@@ -226,15 +234,18 @@ generateCMD
         try {
             if (wrapped) {
                 const start = process.hrtime();
-                const result = await eval(wrapped);
+                const fn = await eval(wrapped);
+                const result = await fn(url, params);
                 const stop = process.hrtime(start);
                 const evalTime = stop[0];
                 newMeta.evalTime = evalTime;
                 console.log("eval time:", evalTime, "seconds");
+                console.log("eval result:");
                 console.log(result);
                 newMeta.evalResult = result;
             }
         } catch (error) {
+            console.log("unexpected error");
             console.error(error);
             newMeta.evalError = (error as Error).message;
         } finally {
@@ -243,6 +254,44 @@ generateCMD
                 JSON.stringify({ ...meta, ...newMeta }, null, 2)
             );
         }
+    });
+
+schemaCMD
+    .requiredOption("-u, --url <url>", "url of the website")
+    .requiredOption("-i, --id <id>", "id of the website")
+    .action(async ({ id, url }) => {
+        if (!validURL(url)) {
+            console.log("invalid url");
+            return;
+        }
+
+        const dir = dirPath(url, id);
+        const paramsPath = paramsFilePath(dir);
+        const schemaPath = schemaFilePath(dir);
+
+        if (!fs.existsSync(dir)) {
+            console.log("dir does not exist");
+        }
+
+        if (!fs.existsSync(paramsPath)) {
+            console.log("params does not exist");
+        }
+
+        const params = JSON.parse(fs.readFileSync(paramsPath, "utf8"));
+
+        const start = process.hrtime();
+        const ast = generateAST(params, undefined);
+        const schema = await generateValidatorWrapped(ast);
+        const zod = generateValidatorDynamic(ast);
+        const stop = process.hrtime(start);
+        const time = stop[0];
+        zod.parse(params);
+        console.log(schema);
+        const expr = eval(schema);
+        expr.parse(params);
+        fs.writeFileSync(schemaPath, schema);
+        console.log("schema generated");
+        console.log("schema generation time:", time, "seconds");
     });
 
 program.parse();

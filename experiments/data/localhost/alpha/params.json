@@ -1,9 +1,0 @@
-{
-  "type": "apartment",
-  "city": "New York",
-  "state": "NY",
-  "zip": "10001",
-  "bedrooms": "2",
-  "maxPrice": "3000",
-  "minPrice": "2000"
-}
