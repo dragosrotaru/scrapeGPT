@@ -1,2 +1,5 @@
+[core]
+    remote = origin
 ['remote "origin"']
-    url = https://dagshub.com/dragosrotaru/scraper.git
+    url = s3://dvc
+    endpointurl = https://dagshub.com/dragosrotaru/scraper.s3
