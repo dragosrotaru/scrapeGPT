@@ -1,15 +1,13 @@
-import fs from "fs";
+import prettier from "prettier";
 import z, { ZodTypeAny } from "zod";
-import { Retriever, RetrieverParam } from "../retrieve";
+import { eslint } from "../lint";
 import { generateAST } from "./ast";
 import { JSONAST } from "./astTypes";
 import { JSONType } from "./jsonTypes";
 
-// TODO add required to everything
-// TODO infer types from key names
-
 /** Generates zod schema code and returns as a string */
 export const generateValidator = (obj: JSONAST): string => {
+    // TODO infer types from key names
     if (obj.kind === "primitive") {
         const unique = new Set(obj.values);
         const uniqueRatio = unique.size / obj.values.length;
@@ -28,36 +26,13 @@ export const generateValidator = (obj: JSONAST): string => {
                         })
                         .join(",")}])`;
                 }
-                // TODO narrow down
-                /*
-          - ip
-          - url
-          - email
-          - phone
-          - uuid
-          - date
-          - regex
-          - string number
-          - string boolean
-          - string null
-        */
+                // TODO narrow down ip, url, email, phone, uuid, date, regex, string number, string boolean, string null
                 return "z.string()";
             case "number":
                 if (uniqueRatio < 0.05 && unique.size < 10) {
-                    // TODO this should not be an enum, enum cannot be of type number
-                    return `z.literal([${[...unique]
-                        .map((v) => `'${v}'`)
-                        .join(",")}])`;
+                    return `z.union([ ${[...unique].join(",")} ])`;
                 }
-                // TODO narrow down
-                /*
-          - int
-          - float
-          - positive
-          - negative
-          - min
-          - max
-        */
+                // TODO narrow down int, float, positive, negative, min, max
                 return "z.number()";
             case "boolean":
                 return "z.boolean()";
@@ -89,6 +64,22 @@ export const generateValidator = (obj: JSONAST): string => {
         return `z.union([${obj.values.map(generateValidator)}])`;
     }
     return "z.unknown()";
+};
+
+export const generateValidatorWrapped = async (
+    obj: JSONAST
+): Promise<string> => {
+    const schema = generateValidator(obj);
+    const code = `
+            const z = require("zod");
+            
+            module.exports.default = ${schema};
+        `;
+    const lintResults = await eslint.lintText(code);
+    return prettier.format(lintResults[0].output as string, {
+        tabWidth: 4,
+        parser: "babel",
+    });
 };
 
 /** Generates zod schema code and returns it*/
@@ -133,41 +124,12 @@ export type GenData<T> = {
     error?: Error;
 };
 
-const saveToFile = (data: unknown, name: string) => {
-    fs.writeFileSync(
-        `./${name}-${new Date().getTime()}.json`,
-        JSON.stringify(data, null, 2)
-    );
-};
+/** generates validator from one or more json objects */
+export const generateIterative = async (json: JSONType[]) => {
+    let ast: JSONAST | undefined = undefined;
 
-/** Retrieves one or more data and generates validator from the set of responses
- * saves to file
- *
- */
-export const generateIterative = async <T extends RetrieverParam>(
-    name: string,
-    retriever: Retriever<T>,
-    params: T[]
-) => {
-    const data: GenData<T> = {
-        params,
-        json: [],
-    };
-    let param = params[0];
-    try {
-        for (let i = 0; i < params.length; i++) {
-            param = params[i];
-            data.json[i] = await retriever(param);
-            data.ast = generateAST(data.json, data.ast);
-        }
-        data.schema = generateValidator(data.ast as JSONAST);
-        saveToFile(data, name);
-        return data;
-    } catch (error) {
-        console.log("Error:", name, JSON.stringify(param));
-        console.log(error);
-        data.error = error as Error;
-        saveToFile(data, name);
-        return data;
+    for (let i = 0; i < json.length; i++) {
+        ast = generateAST(json[i], ast);
     }
+    return generateValidator(ast as JSONAST);
 };

@@ -53,43 +53,65 @@ Given that you have the url to an indexing webpage or results page, the basic pr
 
 ## TODO
 
+### Testing structure
+
+data/webpage/originalhash/index.html
+data/webpage/originalhash/compresshash/compressed.html
+data/webpage/originalhash/compresshash/codehash/code.js,lint.json
+data/webpage/originalhash/compresshash/codehash/paramshash/params.json,schema.js
+
+experiments/instrumentbranch/experimentbranch/commitid/datahash/results.json
+
 ### Structural and Testability
 
--   refactor wrapCode to add instrumentation for measuring results:
-
-    -   detect failure to fill form elements
-    -   detect failure to trigger a form submission (register event handler, watch for page reload or network activity)
-    -   output a report in structured format which can be used to feed back into chatgpt
-
+-   investigate how dagshub works
+-   refactor usage of puppeteer, wrapper code and retriever to reuse browser
+-   write helper methods to run multiple tests at once and aggregate the metadata
+-   add experiment layer
+    -   git branching
+    -   metadata aggregation code outputs results.json, adds git branch reference, commits to git on completion and cherrypicks results.json
+-   metadata
+    -   metadata should be generated per operation and in its own file
+-   file system for experimental data
+    -   add separation of real and synthetic
+    -   use hashing structure like above
 -   generate synthetic test data using gpt
--   refactor retrieve to identify all dom elements which have event handlers defined in javascript
--   refactor generate to work on a per field basis
--   refactor generate to produce code without chatgpt in the simple case
 
--   refactor usage of puppeteer
--   generate validator schema for JSON
--   prompt change management and testing
+## Next levels
+
+-   get gpt to generate results extractor
+-   refactor generate and wrapper code to work with per-field granularity
+    -   standardize optional field typeguard
+    -   test that selectors work on both compressed and original
+    -   check that the field was changed using event listener
+
+### Parameterization
+
+-   synthesize parameters
+-   improve schema generation to be more specific
+-   detect optional and required parameters
+-   detect all options in the case of selection fields
+-   request types when generating code and use those instead of making a second call to chatgpt (also gives us a typed sdk)
 
 ### Better Results
 
 -   get gpt to fix its own runtime errors
--   get gpt to fix its own linting or compiler errors
--   write custom linter for gpt code
--   pass title and description into JSON generation
+-   get gpt to fix its own linting errors
+-   write custom linting rules
 
-### Wider Applicability
+### Better Context
 
--   add compression to focus on forms, main content
--   refactor compress to focus on forms, buttons, fields, inputs and dom elements which have built in interactivity (incl defined eventHandlers like onClick)
+-   refactor compress to focus on main, form, button, field, input, select, etc ans dom elements with event handlers
+-   refactor retrieve to identify all dom elements which have event handlers defined in javascript and use metadata in compression and generator
 -   optimize compression algorithm by checking token count or length and iteratively applying compression techniques
 -   optimize compression algorithm using reinforcement learning
 
-### Further Results
+### Other
 
--   get gpt to generate results extractor
--   parameter faker and indexer
+-   refactor generate to produce code without chatgpt in the simple cases (performance)
+-   rename Retriever concept to Extractor and repurpose old code
 
-### Generating a validation Schema
+### Generating a Results Validation Schema
 
 -   pick a subset of the data based on the Tree Edit Distance algorithm (picking most dissimilar trees)
 -   generate a validation schema and scraper for each member of this subset using a language model like chatGPT

@@ -1,7 +1,7 @@
 .DS_Store
 node_modules
 build
-experiments/user
+user
 apks
 dex-tools-2.1
 *.cer
