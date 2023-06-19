@@ -1,9 +1,0 @@
-{
-  "type": "house",
-  "city": "New York",
-  "state": "NY",
-  "zip": "10001",
-  "bedrooms": "3",
-  "maxPrice": "500000",
-  "minPrice": "200000"
-}
