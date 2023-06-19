@@ -29,7 +29,7 @@ const validURL = (s: string) => {
 };
 
 const dirPath = (url: string, id?: string) =>
-    path.join("experiments", urlToPath(url), id || createID());
+    path.join("data", urlToPath(url), id || createID());
 const originalFilePath = (dir: string) => path.join(dir, "index.html");
 const metaFilePath = (dir: string) => path.join(dir, "meta.json");
 const compressedFilePath = (dir: string) => path.join(dir, "compressed.html");
