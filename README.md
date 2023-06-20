@@ -55,26 +55,15 @@ Given that you have the url to an indexing webpage or results page, the basic pr
 
 ### Testing structure
 
-data/webpage/originalhash/index.html
-data/webpage/originalhash/compresshash/compressed.html
-data/webpage/originalhash/compresshash/codehash/code.js,lint.json
-data/webpage/originalhash/compresshash/codehash/paramshash/params.json,schema.js
-
-experiments/instrumentbranch/experimentbranch/commitid/datahash/results.json
-
 ### Structural and Testability
 
--   investigate how dagshub works
+-   add parsing of params.json in all the methods, use values
+-   create helper function to add urls to params
+-   add metrics aggregation methods
+-   add metrics
+-   add token count metrics to user/system prompts, including empty, and to the outputs
+
 -   refactor usage of puppeteer, wrapper code and retriever to reuse browser
--   write helper methods to run multiple tests at once and aggregate the metadata
--   add experiment layer
-    -   git branching
-    -   metadata aggregation code outputs results.json, adds git branch reference, commits to git on completion and cherrypicks results.json
--   metadata
-    -   metadata should be generated per operation and in its own file
--   file system for experimental data
-    -   add separation of real and synthetic
-    -   use hashing structure like above
 -   generate synthetic test data using gpt
 
 ## Next levels

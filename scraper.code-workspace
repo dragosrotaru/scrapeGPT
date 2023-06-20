@@ -1,0 +1,33 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "extensions": {
+    "recommendations": [
+      "aaron-bond.better-comments",
+      "usernamehw.errorlens",
+      "dbaeumer.vscode-eslint",
+      "github.copilot",
+      "eamodio.gitlens",
+      "ms-vscode.hexeditor",
+      "yzhang.markdown-all-in-one",
+      "esbenp.prettier-vscode",
+      "timonwong.shellcheck"
+    ]
+  },
+  "settings": {
+    "prettier.enable": true,
+    "prettier.documentSelectors": ["**/*.svg"],
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true,
+      "source.fixAll.tslint": true,
+      "source.organizeImports": true
+    },
+    "debug.inlineValues": "on",
+    "dvc.dvcPath": "dvc"
+  }
+}

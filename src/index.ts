@@ -1,25 +1,26 @@
-import { program } from "commander";
-import { randomUUID } from "crypto";
-import fs from "fs";
-import path from "path";
-import { generate } from "./forms/generate";
+import { Option, program } from "commander";
+import {
+    fileExists,
+    filePaths,
+    makeDirIfNotExists,
+    overwriteFile,
+    overwriteJSON,
+    readFile,
+    readJSON,
+} from "./files";
+import { generateFormCode, generateFormProps } from "./forms/generate";
 import { compress } from "./html/compress";
+import { Files, Stage, StageMethod } from "./interfaces";
 import { generateAST } from "./json/ast";
 import {
     generateValidatorDynamic,
     generateValidatorWrapped,
 } from "./json/generate";
 import { retrieve } from "./retrieve";
+import testbed from "./retrieve/testbed";
+import { timeit } from "./util";
 
-const createID = () => randomUUID().slice(0, 8);
-const urlToPath = (url: string) => {
-    let path = new URL(url).host + new URL(url).pathname;
-    if (path.endsWith("/")) {
-        path = path.slice(0, -1);
-    }
-    return path.replace(/\/$/, "-");
-};
-const validURL = (s: string) => {
+const isUrl = (s: string) => {
     try {
         new URL(s);
         return true;
@@ -28,270 +29,119 @@ const validURL = (s: string) => {
     }
 };
 
-const dirPath = (url: string, id?: string) =>
-    path.join("data", urlToPath(url), id || createID());
-const originalFilePath = (dir: string) => path.join(dir, "index.html");
-const metaFilePath = (dir: string) => path.join(dir, "meta.json");
-const compressedFilePath = (dir: string) => path.join(dir, "compressed.html");
-const paramsFilePath = (dir: string) => path.join(dir, "params.json");
-const schemaFilePath = (dir: string) => path.join(dir, "schema.js");
-
 const cli = program
     .name("scrapeGPT")
     .version("0.0.1")
     .description("Automated Scraper");
 
-const retrieveCMD = cli.command("retrieve");
-const compressCMD = cli.command("compress");
-const generateCMD = cli.command("generate");
-const schemaCMD = cli.command("schema");
+const urlOption = new Option(
+    "-u, --url <url>",
+    "Webpage url"
+).makeOptionMandatory();
+
+const htmlCMD = cli.command("html");
+
+const retrieveCMD = htmlCMD.command("retrieve");
+const compressCMD = htmlCMD.command("compress");
+
+const formCMD = cli.command("form");
+
+const formcodeCMD = formCMD.command("code");
+const formpropsCMD = formCMD.command("props");
+const formschemaCMD = formCMD.command("schema");
+const fillFormCMD = cli.command("fill");
+
+const keyInFilesGuard = (key: string): key is Files => {
+    return key in filePaths("", "retrieve");
+};
+
+const stage = async (
+    name: Stage,
+    dependencies: Files[],
+    url: string,
+    method: StageMethod
+) => {
+    if (!isUrl(url)) {
+        console.log("invalid url");
+        return;
+    }
+    const paths = filePaths(url, name);
+    makeDirIfNotExists(paths.dir);
+
+    for (const dependency of dependencies) {
+        if (!fileExists(paths[dependency])) {
+            console.log(`${dependency} does not exist`);
+            return;
+        }
+    }
+
+    const result = await method(paths);
+
+    Object.entries(result).forEach(([key, value]) => {
+        // TODO refactor interface to be Exact/Partial
+        if (!keyInFilesGuard(key)) {
+            console.log(`invalid key: ${key}`);
+            return;
+        }
+        if (!value) {
+            return;
+        }
+        if (typeof value !== "string") {
+            overwriteJSON(paths[key], value);
+            return;
+        }
+        overwriteFile(paths[key], value);
+    });
+};
 
 retrieveCMD
-    .requiredOption("-u, --url <url>", "Website url to retrieve")
-    .action(async ({ url }) => {
-        if (!validURL(url)) {
-            console.log("invalid url");
-            return;
-        }
+    .addOption(urlOption)
+    .action(async ({ url }) => stage("retrieve", [], url, () => retrieve(url)));
 
-        const id = createID();
-        const dir = dirPath(url, id);
-        const filePath = originalFilePath(dir);
-        const metaPath = metaFilePath(dir);
+compressCMD.addOption(urlOption).action(async ({ url, tokenize }) =>
+    stage("compress", ["original"], url, async (paths) => {
+        return compress(readFile(paths.original), tokenize);
+    })
+);
 
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
+formcodeCMD.addOption(urlOption).action(async ({ url }) =>
+    stage("formcode", ["compressed"], url, async (paths) => {
+        return generateFormCode(readFile(paths.compressed));
+    })
+);
 
-        if (fs.existsSync(filePath)) {
-            console.log("already retrieved, continuing");
-        }
+formpropsCMD.addOption(urlOption).action(async ({ url }) =>
+    stage("formprops", ["meta", "code"], url, async (paths) => {
+        return generateFormProps(readFile(paths.code), readJSON(paths.meta));
+    })
+);
 
-        // time
-        const start = process.hrtime();
-        const { html, title, description } = await retrieve(url);
-        const stop = process.hrtime(start);
-        const retrieveTime = stop[0];
-        console.log("retrieveTime time:", retrieveTime, "seconds");
-
-        let meta = {};
-        if (fs.existsSync(metaPath)) {
-            meta = JSON.parse(fs.readFileSync(metaPath, "utf8"));
-        }
-
-        fs.writeFileSync(filePath, html);
-        fs.writeFileSync(
-            metaPath,
-            JSON.stringify(
-                { ...meta, title, description, url, retrieveTime },
-                null,
-                2
-            )
-        );
-    });
-
-compressCMD
-    .requiredOption("-u, --url <url>", "Website url to compress")
-    .option("-i, --id <id>", "id of the website")
-    .option("-nt, --no-tokenize", "Dont tokenize the input")
-    .action(async ({ id, url, tokenize }) => {
-        if (!validURL(url)) {
-            console.log("invalid url");
-            return;
-        }
-
-        const dir = dirPath(url, id);
-        const originalPath = originalFilePath(dir);
-        const compressedPath = compressedFilePath(dir);
-        const metaPath = metaFilePath(dir);
-
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
-
-        if (fs.existsSync(compressedPath)) {
-            console.log("already compressed, continuing");
-        }
-
-        const existsAlready = fs.existsSync(originalPath);
-        console.log("exists already", originalPath);
-        let html = "";
-        if (existsAlready) {
-            html = fs.readFileSync(originalPath, "utf8");
-        } else {
-            const start = process.hrtime();
-            const result = await retrieve(url);
-            const stop = process.hrtime(start);
-            const retrieveTime = stop[0];
-            console.log("retrieve time:", retrieveTime, "seconds");
-
-            fs.writeFileSync(originalPath, html);
-            fs.writeFileSync(
-                metaPath,
-                JSON.stringify(
-                    {
-                        title: result.title,
-                        description: result.description,
-                        url,
-                        retrieveTime,
-                    },
-                    null,
-                    2
-                )
-            );
-        }
-
-        const start = process.hrtime();
-        const { compressed, initial, after } = await compress(html, tokenize);
-        const stop = process.hrtime(start);
-        const compressTime = stop[0];
-
-        console.log("compressed to", after, "tokens");
-        if (initial) {
-            console.log("initial tokens:", initial);
-            console.log(
-                "compression ratio:",
-                (initial / after).toFixed(2) + "x"
-            );
-            console.log("compression time:", compressTime, "seconds");
-        }
-
-        let meta = {};
-        if (fs.existsSync(metaPath)) {
-            meta = JSON.parse(fs.readFileSync(metaPath, "utf8"));
-        }
-        fs.writeFileSync(
-            metaPath,
-            JSON.stringify({ ...meta, compressTime }, null, 2)
-        );
-
-        fs.writeFileSync(compressedPath, compressed);
-    });
-
-generateCMD
-    .requiredOption("-u, --url <url>", "url of the website")
-    .requiredOption("-i, --id <id>", "id of the website")
-    .action(async ({ id, url }) => {
-        if (!validURL(url)) {
-            console.log("invalid url");
-            return;
-        }
-
-        const dir = dirPath(url, id);
-        const originalPath = originalFilePath(dir);
-        const metaPath = metaFilePath(dir);
-
-        const codeFilePath = path.join(dir, "code.js");
-
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
-
-        if (fs.existsSync(codeFilePath)) {
-            console.log("already generated, continuing");
-        }
-
-        const html = fs.readFileSync(originalPath, "utf8");
-
-        let meta = {};
-        if (fs.existsSync(metaPath)) {
-            meta = JSON.parse(fs.readFileSync(metaPath, "utf8"));
-        }
-
+formschemaCMD.addOption(urlOption).action(async ({ url }) =>
+    stage("formschema", ["props"], url, async (paths) => {
+        const props = readJSON(paths.props);
         const {
-            wrapped,
-            codeError,
-            params,
-            paramsError,
-            lint,
-            meta: newMeta,
-        } = await generate(url, html, meta);
-
-        if (wrapped) {
-            fs.writeFileSync(codeFilePath, wrapped);
-        }
-
-        if (params) {
-            const fileName = paramsFilePath(dir);
-            fs.writeFileSync(fileName, JSON.stringify(params, null, 2));
-        }
-
-        if (codeError) {
-            const fileName = path.join(dir, "codeError.json");
-            fs.writeFileSync(fileName, JSON.stringify(codeError, null, 2));
-        }
-
-        if (paramsError) {
-            const fileName = path.join(dir, "paramsError.json");
-            fs.writeFileSync(fileName, JSON.stringify(paramsError, null, 2));
-        }
-
-        if (lint) {
-            const fileName = path.join(dir, "lint.json");
-            fs.writeFileSync(fileName, JSON.stringify(lint, null, 2));
-        }
-
-        try {
-            if (wrapped) {
-                const start = process.hrtime();
-                const fn = await eval(wrapped);
-                const result = await fn(url, params);
-                const stop = process.hrtime(start);
-                const evalTime = stop[0];
-                newMeta.evalTime = evalTime;
-                console.log("eval time:", evalTime, "seconds");
-                console.log("eval result:");
-                console.log(result);
-                newMeta.evalResult = result;
-            }
-        } catch (error) {
-            console.log("unexpected error");
-            console.error(error);
-            newMeta.evalError = (error as Error).message;
-        } finally {
-            fs.writeFileSync(
-                metaPath,
-                JSON.stringify({ ...meta, ...newMeta }, null, 2)
-            );
-        }
-    });
-
-schemaCMD
-    .requiredOption("-u, --url <url>", "url of the website")
-    .requiredOption("-i, --id <id>", "id of the website")
-    .action(async ({ id, url }) => {
-        if (!validURL(url)) {
-            console.log("invalid url");
-            return;
-        }
-
-        const dir = dirPath(url, id);
-        const paramsPath = paramsFilePath(dir);
-        const schemaPath = schemaFilePath(dir);
-
-        if (!fs.existsSync(dir)) {
-            console.log("dir does not exist");
-        }
-
-        if (!fs.existsSync(paramsPath)) {
-            console.log("params does not exist");
-        }
-
-        const params = JSON.parse(fs.readFileSync(paramsPath, "utf8"));
-
-        const start = process.hrtime();
-        const ast = generateAST(params, undefined);
-        const schema = await generateValidatorWrapped(ast);
-        const zod = generateValidatorDynamic(ast);
-        const stop = process.hrtime(start);
-        const time = stop[0];
-        zod.parse(params);
-        console.log(schema);
+            result: { schema, zod },
+            time,
+        } = await timeit(async () => {
+            const ast = generateAST(props, undefined);
+            const schema = await generateValidatorWrapped(ast);
+            const zod = generateValidatorDynamic(ast);
+            return { schema, zod };
+        });
+        zod.parse(props);
         const expr = eval(schema);
-        expr.parse(params);
-        fs.writeFileSync(schemaPath, schema);
-        console.log("schema generated");
-        console.log("schema generation time:", time, "seconds");
-    });
+        expr.parse(props);
+        return { schema, metrics: { time } };
+    })
+);
+
+fillFormCMD.addOption(urlOption).action(async ({ url }) =>
+    stage("formfill", ["meta", "code", "props"], url, async (paths) => {
+        const code = readFile(paths.code);
+        const props = readJSON(paths.props);
+        const meta = readJSON(paths.meta);
+        return testbed(meta.url, code, props);
+    })
+);
 
 program.parse();

@@ -1,0 +1,15 @@
+{
+    "retrieve": {
+        "skipIfExists": true
+    },
+    "compress": {
+        "order": []
+    },
+    "genformcode": {},
+    "genformprops": {},
+    "genformschema": {},
+    "urls": {
+        "http://localhost/alpha/": "localhost-alpha",
+        "https://imdb.com/": "imdb-com"
+    }
+}

@@ -18,7 +18,7 @@ export const retrieve = async (url: string) => {
         (element) => element.getAttribute("content") || ""
     );
     await browser.close();
-    return { html, title, description };
+    return { original: html, meta: { title, description } };
 };
 
 export type RetrieverParam = { [key: string]: string } | undefined;
