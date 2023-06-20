@@ -29,7 +29,7 @@ type CompressParams = {
     attributeMaxLength?: number;
 };
 
-export const htmlcompress = (original: string) => {
+export const htmlcompress = (original: string): any => {
     try {
         const params: CompressParams = compressparams;
         const tags = params.removeTags ? new Set(params.removeTags) : null;
@@ -61,113 +61,114 @@ export const htmlcompress = (original: string) => {
             : null;
         const attributeMaxLength = params.attributeMaxLength;
 
+        const inner = (html: Document | Element): string => {
+            if (focusOnFirstTag) {
+                const tag = html.querySelector(focusOnFirstTag);
+                if (tag) {
+                    return inner(tag);
+                }
+            }
+
+            const elements = html.querySelectorAll("*");
+            for (const element of elements) {
+                const tag = element.tagName;
+
+                // Remove tags
+                if (tags?.has(tag)) {
+                    element.remove();
+                    continue;
+                }
+
+                // Remove structural tags
+                if (removeStructural?.has(tag)) {
+                    if (element.attributes.length === 1) {
+                        while (element.firstChild) {
+                            element.parentNode?.insertBefore(
+                                element.firstChild,
+                                element
+                            );
+                        }
+                        element.remove();
+                    }
+                }
+
+                // Remove empty tags
+                if (
+                    removeEmpty &&
+                    element.innerHTML === "" &&
+                    !removeEmptyTagExclusion?.has(tag)
+                ) {
+                    element.remove();
+                    continue;
+                }
+
+                // Remove long text
+                if (textMaxLength) {
+                    const text = element.textContent;
+                    if (
+                        text &&
+                        text.length > textMaxLength &&
+                        !textLengthExclusion?.has(tag)
+                    ) {
+                        element.textContent = text.slice(0, textMaxLength);
+                    }
+                }
+
+                // Dont remove any attributes for these tags
+                if (attributeTagExclusion?.has(tag)) {
+                    continue;
+                }
+
+                // iterate over all attributes
+                if (allAttributes || attributeMaxLength) {
+                    for (const attribute of element.attributes) {
+                        if (attributeExclusion?.has(attribute.name)) {
+                            continue;
+                        }
+
+                        if (allAttributes) {
+                            element.removeAttribute(attribute.name);
+                            continue;
+                        }
+
+                        if (attributes?.has(attribute.name)) {
+                            element.removeAttribute(attribute.name);
+                            continue;
+                        }
+
+                        if (
+                            attributeMaxLength &&
+                            attribute.value.length > attributeMaxLength
+                        ) {
+                            element.removeAttribute(attribute.name);
+                        }
+                    }
+                    continue;
+                }
+
+                // remove specific attributes (more efficient)
+                if (attributes)
+                    for (const attribute of attributes) {
+                        element.removeAttribute(attribute);
+                    }
+            }
+
+            const outerHTML = (html as Element).outerHTML
+                ? (html as Element).outerHTML
+                : (html as Document).documentElement.outerHTML;
+
+            const compressed = replaceRegex(outerHTML, [
+                [/(<!--.*?-->)|(<!--[\w\W\n\s]+?-->)/g, ""], // Remove comments
+                [/\s+/g, " "], // Remove whitespace
+                [/>\s+</g, "><"], // Remove whitespace between tags
+            ]);
+            return compressed;
+        };
+
         const start = process.hrtime();
 
         const html = new JSDOM(original).window.document;
-
-        if (focusOnFirstTag) {
-            const tag = html.querySelector(focusOnFirstTag);
-            if (tag) {
-                while (tag?.previousSibling) {
-                    tag.parentNode?.removeChild(tag.previousSibling);
-                }
-                while (tag?.nextSibling) {
-                    tag.parentNode?.removeChild(tag.nextSibling);
-                }
-            }
-        }
-
-        const elements = html.querySelectorAll("*");
-        for (const element of elements) {
-            const tag = element.tagName;
-
-            // Remove tags
-            if (tags?.has(tag)) {
-                element.remove();
-                continue;
-            }
-
-            // Remove structural tags
-            if (removeStructural?.has(tag)) {
-                if (element.attributes.length === 1) {
-                    while (element.firstChild) {
-                        element.parentNode?.insertBefore(
-                            element.firstChild,
-                            element
-                        );
-                    }
-                    element.remove();
-                }
-            }
-
-            // Remove empty tags
-            if (
-                removeEmpty &&
-                element.innerHTML === "" &&
-                !removeEmptyTagExclusion?.has(tag)
-            ) {
-                element.remove();
-                continue;
-            }
-
-            // Remove long text
-            if (textMaxLength) {
-                const text = element.textContent;
-                if (
-                    text &&
-                    text.length > textMaxLength &&
-                    !textLengthExclusion?.has(tag)
-                ) {
-                    element.textContent = text.slice(0, textMaxLength);
-                }
-            }
-
-            // Dont remove any attributes for these tags
-            if (attributeTagExclusion?.has(tag)) {
-                continue;
-            }
-
-            // iterate over all attributes
-            if (allAttributes || attributeMaxLength) {
-                while (element.attributes.length > 0) {
-                    const attribute = element.attributes[0];
-                    if (attributeExclusion?.has(attribute.name)) {
-                        continue;
-                    }
-
-                    if (allAttributes) {
-                        element.removeAttribute(attribute.name);
-                        continue;
-                    }
-
-                    if (attributes?.has(attribute.name)) {
-                        element.removeAttribute(attribute.name);
-                        continue;
-                    }
-
-                    if (
-                        attributeMaxLength &&
-                        attribute.value.length > attributeMaxLength
-                    ) {
-                        element.removeAttribute(attribute.name);
-                    }
-                }
-                continue;
-            }
-
-            // remove specific attributes (more efficient)
-            if (attributes)
-                for (const attribute of attributes) {
-                    element.removeAttribute(attribute);
-                }
-        }
-
-        const compressed = replaceRegex(html.documentElement.outerHTML, [
-            [/(<!--.*?-->)|(<!--[\w\W\n\s]+?-->)/g, ""], // Remove comments
-            [/\s+/g, " "], // Remove whitespace
-            [/>\s+</g, "><"], // Remove whitespace between tags
-        ]);
-
+        const compressed = inner(html);
         const finish = process.hrtime(start);
 
         const originalTokens = params.tokenizeInput

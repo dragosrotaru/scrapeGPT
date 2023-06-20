@@ -53,9 +53,5 @@
     "formfill": {
         "waitForIdleTime": 500,
         "waitForTimeout": 5000
-    },
-    "urls": {
-        "http://localhost/alpha/": "localhost-alpha",
-        "https://imdb.com/": "imdb-com"
     }
 }

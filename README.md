@@ -57,15 +57,12 @@ Given that you have the url to an indexing webpage or results page, the basic pr
 
 ### Structural and Testability
 
--   enable multiple projects at once
--   add artifacts
--   refactor usage of puppeteer to use single browser instance
 -   add metrics aggregation methods and produce metrics in the standard format
+-   refactor usage of puppeteer to use single browser instance
 -   create helper function to add urls to params
 -   generate synthetic test data using gpt
 -   implement use of experiments
 
--   add parsing of params.json in all the methods and use values
 -   refactor stage interfaces to be Exact/Partial return type and infer deps
 
 ## Next levels
@@ -76,11 +73,11 @@ Given that you have the url to an indexing webpage or results page, the basic pr
     -   test that selectors work on both compressed and original
     -   check that the field was changed using event listener
 
-### Parameterization
+### Props
 
--   synthesize parameters
+-   synthesize props
 -   improve schema generation to be more specific
--   detect optional and required parameters
+-   detect optional and required props
 -   detect all options in the case of selection fields
 -   request types when generating code and use those instead of making a second call to chatgpt (also gives us a typed sdk)
 
@@ -92,7 +89,7 @@ Given that you have the url to an indexing webpage or results page, the basic pr
 
 ### Better Context
 
--   refactor compress to focus on main, form, button, field, input, select, etc ans dom elements with event handlers
+-   refactor compress to focus on main, form, button, field, input, select, etc and dom elements with event handlers
 -   refactor retrieve to identify all dom elements which have event handlers defined in javascript and use metadata in compression and generator
 -   optimize compression algorithm by checking token count or length and iteratively applying compression techniques
 -   optimize compression algorithm using reinforcement learning
@@ -100,7 +97,6 @@ Given that you have the url to an indexing webpage or results page, the basic pr
 ### Other
 
 -   refactor generate to produce code without chatgpt in the simple cases (performance)
--   rename Retriever concept to Extractor and repurpose old code
 
 ### Generating a Results Validation Schema
 
