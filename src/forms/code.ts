@@ -1,20 +1,37 @@
 import { requestJavascript } from "../gpt";
 import { lintAndFormat } from "../lint";
+import params from "../params.json";
+
+const outputSpecList = () => {
+    let output = "";
+    for (const item of params.formcode.prompt.outputSpec) {
+        if (params.formcode.prompt.usesListDelimitation) {
+            output += `- ${item}\n`;
+        } else {
+            output += `${item}\n`;
+        }
+    }
+    return output;
+};
 
 const formCodePrompt = (html: string) => {
-    return `
-    write a function which:
-    - accepts a puppeteer page as the first parameter
-    - accepts all the inputs accepted on the webpage which follows below as the second parameter (an object with camelCase keys)
-    - checks if each parameter exists before attempting to fill it in
-    - correctly fills in every input
-    - triggers a submission
-    - does nothing else
-    
-    html\`\`\`
-    ${html}
-    \`\`\`
-  `;
+    if (params.formcode.prompt.includesHTMLBlockMarkup) {
+        return `
+        write a function which:
+        ${outputSpecList()}
+        
+        \`\`\`html
+        ${html}
+        \`\`\`
+    `;
+    } else {
+        return `
+        write a function which:
+        ${outputSpecList()}
+        
+        ${html}
+    `;
+    }
 };
 
 export const formcode = async (html: string) => {

@@ -1,5 +1,6 @@
 import z, { ZodTypeAny } from "zod";
 import { lintAndFormat } from "../lint";
+import params from "../params.json";
 import { generateAST } from "./ast";
 import { JSONAST } from "./astTypes";
 import { JSONType } from "./jsonTypes";
@@ -12,7 +13,7 @@ export const generateValidator = (obj: JSONAST): string => {
         const uniqueRatio = unique.size / obj.values.length;
         switch (obj.type) {
             case "string":
-                if (uniqueRatio < 0.333) {
+                if (uniqueRatio < params.formschema.stringUniqueRatio) {
                     return `z.enum([${[...unique]
                         .map((v) => {
                             const str = String(v);
@@ -28,7 +29,10 @@ export const generateValidator = (obj: JSONAST): string => {
                 // TODO narrow down ip, url, email, phone, uuid, date, regex, string number, string boolean, string null
                 return "z.string()";
             case "number":
-                if (uniqueRatio < 0.05 && unique.size < 10) {
+                if (
+                    uniqueRatio < params.formschema.numberUniqueRatio &&
+                    unique.size < params.formschema.numberUniqueSize
+                ) {
                     return `z.union([ ${[...unique].join(",")} ])`;
                 }
                 // TODO narrow down int, float, positive, negative, min, max

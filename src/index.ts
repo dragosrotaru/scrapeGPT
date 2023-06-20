@@ -6,6 +6,7 @@ import { formschema } from "./forms/schema";
 import { htmlcompress } from "./html/compress";
 import { htmlretrieve } from "./html/retrieve";
 
+import { getBrowser, getNewPage } from "./puppeteer/browser";
 import testbed from "./puppeteer/testbed";
 import { stage } from "./stage";
 import { timeit } from "./util";
@@ -32,29 +33,19 @@ const formschemaCMD = formCMD.command("schema");
 const fillFormCMD = formCMD.command("fill");
 
 retrieveCMD.addOption(urlOption).action(async ({ url }) =>
-    stage("htmlretrieve", [], url, () => {
-        return timeit(() => htmlretrieve(url));
+    stage("htmlretrieve", [], url, async () => {
+        const page = await getNewPage(await getBrowser())();
+        return timeit(() => htmlretrieve(url, page));
     })
 );
 
-compressCMD
-    .addOption(urlOption)
-    .action(async ({ url, tokenize: tokenizeInput = true }) =>
-        stage(
-            "htmlcompress",
-            [["htmlretrieve", "original"]],
-            url,
-            async (deps) => {
-                const original = deps.htmlretrieve?.original;
-                if (!original) throw new Error("dep missing");
-                return timeit(async () =>
-                    htmlcompress(original, {
-                        tokenizeInput,
-                    })
-                );
-            }
-        )
-    );
+compressCMD.addOption(urlOption).action(async ({ url }) =>
+    stage("htmlcompress", [["htmlretrieve", "original"]], url, async (deps) => {
+        const original = deps.htmlretrieve?.original;
+        if (!original) throw new Error("dep missing");
+        return timeit(async () => htmlcompress(original));
+    })
+);
 
 formcodeCMD.addOption(urlOption).action(async ({ url }) =>
     stage("formcode", [["htmlcompress", "compressed"]], url, async (deps) => {
@@ -105,7 +96,8 @@ fillFormCMD.addOption(urlOption).action(async ({ url }) =>
             const code = deps.formcode?.code;
             const data = deps.formprops?.data;
             if (!meta || !code || !data) throw new Error("dep missing");
-            return timeit(() => testbed(meta.url, code, data));
+            const page = await getNewPage(await getBrowser())();
+            return timeit(() => testbed(meta.url, code, data, page));
         }
     )
 );

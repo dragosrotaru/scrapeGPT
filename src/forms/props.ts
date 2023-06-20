@@ -1,4 +1,5 @@
 import { requestJSON } from "../gpt";
+import params from "../params.json";
 
 const formPropsPrompt = (
     code: string,
@@ -6,19 +7,29 @@ const formPropsPrompt = (
     title?: string,
     description?: string
 ) => {
-    return `
+    const conf = params.formprops.prompt;
+    let prompt = `
         below is javascript code that fills in a web form and submits it.
         It is for a webpage with the following characteristics:
-        - url: ${url}
-        ${title ? '- title: "' + title + '"\n' : ""}
-        ${description ? '- description: "' + description + '"\n' : ""}
+        ${conf.includeURL && url ? '- url: "' + url + '"\n' : ""}
+        ${conf.includeTitle && title ? '- title: "' + title + '"\n' : ""}
+        ${
+            conf.includeDescription && description
+                ? '- description: "' + description + '"\n'
+                : ""
+        }
     
         return an example json object containing realistic data for the parameter of the function below.
-    
-        \`\`\`javascript
-        ${code}
-        \`\`\`
+
       `;
+    if (conf.includesCodeBlockMarkup) {
+        prompt += `\`\`\`javascript
+        ${code}
+        \`\`\``;
+    } else {
+        prompt += code;
+    }
+    return prompt;
 };
 
 export const formprops = async (

@@ -1,0 +1,61 @@
+{
+    "puppeteer": {
+        "userDataDir": "./user",
+        "headless": false,
+        "viewport": {
+            "width": 1400,
+            "height": 1000
+        },
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome"
+    },
+    "htmlretrieve": {},
+    "htmlcompress": {
+        "tokenizeInput": true,
+        "focusOnFirstTag": "FORM",
+        "removeTags": [],
+        "removeEmpty": true,
+        "removeEmptyTagExclusion": ["INPUT"],
+        "textMaxLength": 500,
+        "textLengthExclusion": ["INPUT", "FORM", "SELECT", "BUTTON"],
+        "removeStructural": ["DIV", "SECTION", "MAIN", "ARTICLE", "SPAN"],
+        "removeAttributeTagExclusion": ["INPUT", "FORM", "SELECT", "BUTTON"],
+        "removeAttributes": ["class"],
+        "removeAttributeExclusion": ["INPUT", "FORM", "SELECT", "BUTTON"],
+        "attributeMaxLength": 1000
+    },
+    "formcode": {
+        "prompt": {
+            "outputSpec": [
+                "accepts a puppeteer page as the first parameter",
+                "accepts all the inputs accepted on the webpage which follows below as the second parameter (an object with camelCase keys)",
+                "checks if each parameter exists before attempting to fill it in",
+                "correctly fills in every input",
+                "triggers a submission",
+                "does nothing else"
+            ],
+            "includesHTMLBlockMarkup": true,
+            "usesListDelimitation": true
+        }
+    },
+    "formprops": {
+        "prompt": {
+            "includeDescription": true,
+            "includeTitle": true,
+            "includeURL": true,
+            "includesCodeBlockMarkup": true
+        }
+    },
+    "formschema": {
+        "numberUniqueRatio": 0.05,
+        "numberUniqueSize": 10,
+        "stringUniqueRatio": 0.333
+    },
+    "formfill": {
+        "waitForIdleTime": 500,
+        "waitForTimeout": 5000
+    },
+    "urls": {
+        "http://localhost/alpha/": "localhost-alpha",
+        "https://imdb.com/": "imdb-com"
+    }
+}

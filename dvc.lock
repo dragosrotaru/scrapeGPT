@@ -5,14 +5,20 @@ stages:
   htmlretrieve:
     cmd: npm start -- html retrieve -u http://localhost/alpha
     deps:
-    - path: src
-      md5: d751713988987e9331980363e24189ce.dir
-      size: 0
-      nfiles: 0
+    - path: src/html/retrieve.ts
+      md5: cbc83ffede71f765872bfa2e2d33018a
+      size: 868
     params:
-      params.json:
-        htmlretrieve:
-          skipIfExists: true
+      src/params.json:
+        htmlretrieve: {}
+        puppeteer:
+          userDataDir: ./user
+          headless: false
+          viewport:
+            width: 1400
+            height: 1000
+          userAgent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like
+            Gecko) Chrome
     outs:
     - path: data/localhost/alpha/htmlretrieve-metrics.json
       md5: 0926d4ca9671c49452d4af3955469f94
@@ -29,14 +35,43 @@ stages:
     - path: data/localhost/alpha/index.html
       md5: c909a9dacaca4d36451a6fc0122ee4cb
       size: 3860
-    - path: src
-      md5: d751713988987e9331980363e24189ce.dir
-      size: 0
-      nfiles: 0
+    - path: src/html/compress.ts
+      md5: 78737728d389a19f9386e792494f9d59
+      size: 6493
     params:
-      params.json:
+      src/params.json:
         htmlcompress:
-          order: []
+          tokenizeInput: true
+          focusOnFirstTag: FORM
+          removeTags: []
+          removeEmpty: true
+          removeEmptyTagExclusion:
+          - INPUT
+          textMaxLength: 500
+          textLengthExclusion:
+          - INPUT
+          - FORM
+          - SELECT
+          - BUTTON
+          removeStructural:
+          - DIV
+          - SECTION
+          - MAIN
+          - ARTICLE
+          - SPAN
+          removeAttributeTagExclusion:
+          - INPUT
+          - FORM
+          - SELECT
+          - BUTTON
+          removeAttributes:
+          - class
+          removeAttributeExclusion:
+          - INPUT
+          - FORM
+          - SELECT
+          - BUTTON
+          attributeMaxLength: 1000
     outs:
     - path: data/localhost/alpha/htmlcompress-metrics.json
       md5: e7cd2131439fd79b3acd9247b1249cfe
@@ -50,13 +85,29 @@ stages:
     - path: data/localhost/alpha/index.compressed.html
       md5: 339927ac8d2cdd6a9ef3aebb9419a02d
       size: 2663
-    - path: src
-      md5: d751713988987e9331980363e24189ce.dir
-      size: 0
-      nfiles: 0
+    - path: src/forms/code.ts
+      md5: 8fc1b2dde745e058f5f3ef04337e600a
+      size: 2172
+    - path: src/gpt.ts
+      md5: 12653a2734556486b918b2ea0dcafa02
+      size: 3136
+    - path: src/lint.ts
+      md5: d91d398b84e1750d9a251be16711d217
+      size: 772
     params:
-      params.json:
-        formcode: {}
+      src/params.json:
+        formcode:
+          prompt:
+            outputSpec:
+            - accepts a puppeteer page as the first parameter
+            - accepts all the inputs accepted on the webpage which follows below as
+              the second parameter (an object with camelCase keys)
+            - checks if each parameter exists before attempting to fill it in
+            - correctly fills in every input
+            - triggers a submission
+            - does nothing else
+            includesHTMLBlockMarkup: true
+            usesListDelimitation: true
     outs:
     - path: data/localhost/alpha/formcode-lint.json
       md5: ec285c302f0ef1f9e6d528137507a146
@@ -79,13 +130,20 @@ stages:
     - path: data/localhost/alpha/index.json
       md5: 28d110937253136c6cb8eb5a56843e59
       size: 104
-    - path: src
-      md5: d751713988987e9331980363e24189ce.dir
-      size: 0
-      nfiles: 0
+    - path: src/forms/props.ts
+      md5: 061fa1c43025d9b793a0343d6d825a73
+      size: 2312
+    - path: src/gpt.ts
+      md5: 12653a2734556486b918b2ea0dcafa02
+      size: 3136
     params:
-      params.json:
-        formprops: {}
+      src/params.json:
+        formprops:
+          prompt:
+            includeDescription: true
+            includeTitle: true
+            includeURL: true
+            includesCodeBlockMarkup: true
     outs:
     - path: data/localhost/alpha/formprops-metrics.json
       md5: 8cffa26c5d7e14703006d89d431df0df
@@ -102,13 +160,22 @@ stages:
     - path: data/localhost/alpha/formprops.json
       md5: 0c1c36fe5f35b5a580f8a695f37ad307
       size: 153
-    - path: src
+    - path: src/forms/schema.ts
+      md5: eb8d39df902952f85f66de94a8f5c3ed
+      size: 679
+    - path: src/json
       md5: d751713988987e9331980363e24189ce.dir
       size: 0
       nfiles: 0
+    - path: src/lint.ts
+      md5: d91d398b84e1750d9a251be16711d217
+      size: 772
     params:
-      params.json:
-        formschema: {}
+      src/params.json:
+        formschema:
+          numberUniqueRatio: 0.05
+          numberUniqueSize: 10
+          stringUniqueRatio: 0.333
     outs:
     - path: data/localhost/alpha/formschema-lint.json
       md5: ec285c302f0ef1f9e6d528137507a146
@@ -134,13 +201,23 @@ stages:
     - path: data/localhost/alpha/index.json
       md5: 28d110937253136c6cb8eb5a56843e59
       size: 104
-    - path: src
+    - path: src/puppeteer
       md5: d751713988987e9331980363e24189ce.dir
       size: 0
       nfiles: 0
     params:
-      params.json:
-        formfill: {}
+      src/params.json:
+        formfill:
+          waitForIdleTime: 500
+          waitForTimeout: 5000
+        puppeteer:
+          userDataDir: ./user
+          headless: false
+          viewport:
+            width: 1400
+            height: 1000
+          userAgent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like
+            Gecko) Chrome
     outs:
     - path: data/localhost/alpha/formfill-metrics.json
       md5: 0a2159dac779ff3b259928588b3ccd24
