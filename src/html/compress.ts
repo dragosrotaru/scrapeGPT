@@ -175,5 +175,11 @@ export const compress = (html: string, tokenizeInput = false) => {
 
     const initial = tokenizeInput ? tokenizer.encode(html).bpe.length : null;
     const after = tokenizer.encode(compressed).bpe.length;
-    return { compressed, initial, after };
+    return {
+        compressed,
+        metrics: {
+            initial,
+            after,
+        },
+    };
 };

@@ -1,3 +1,81 @@
 stages:
+  retrieve:
+    foreach: ${urls}
+    do:
+      cmd: npm start -- html retrieve -u ${key}
+      params:
+        - retrieve
+      deps:
+        - src
+      outs:
+        - data/${item.path}/index.html
+        - data/${item.path}/retrieve-error.json
+      metrics:
+        - data/${item.path}/retrieve-metrics.json
+      frozen: true
   compress:
-    cmd: npm start -- compress -u http://localhost -i alpha
+    cmd: npm start -- html compress -u ${key}
+    params:
+      - compress
+    deps:
+      - src
+      - data/${item.path}/index.html
+    outs:
+      - data/${item.path}/compressed.html
+      - data/${item.path}/compress-error.json
+    metrics:
+      - data/${item.path}/compress-metrics.json  
+  formcode:
+    cmd: npm start -- form code -u ${key}
+    deps:
+      - src
+      - data/${item.path}/compressed.html
+    params:
+      - formcode
+    outs:
+      - data/${item.path}/code.js
+      - data/${item.path}/lint.json
+      - data/${item.path}/formcode-error.json
+      - data/${item.path}/formcode-response.json
+    metrics:
+      - data/${item.path}/formcode-metrics.json  
+  formprops:
+    cmd: npm start -- form props -u ${key}
+    deps:
+      - src
+      - data/${item.path}/meta.json
+      - data/${item.path}/code.js
+    params:
+      - formprops
+    outs:
+      - data/${item.path}/props.json
+      - data/${item.path}/formprops-error.json
+      - data/${item.path}/formprops-response.json
+    metrics:
+      - data/${item.path}/formprops-metrics.json  
+  formschema:
+    cmd: npm start -- form schema -u ${key}
+    deps:
+      - src
+      - data/${item.path}/props.json
+    params:
+        - formschema
+    outs:
+      - data/${item.path}/schema.js
+      - data/${item.path}/formschema-error.json
+    metrics:
+      - data/${item.path}/formschema-metrics.json
+  formfill:
+    cmd: npm start -- form fill -u ${key}
+    deps:
+      - src
+      - data/${item.path}/meta.json
+      - data/${item.path}/code.js
+      - data/${item.path}/props.json
+    params:
+        - formfill
+    outs:
+      - data/${item.path}/result.json
+      - data/${item.path}/formfill-error.json
+    metrics:
+      - data/${item.path}/formfill-metrics.json
