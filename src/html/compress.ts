@@ -1,5 +1,6 @@
 import { JSDOM } from "jsdom";
 import { countTokens } from "../gpt";
+import { htmlcompress as compressparams } from "../params.json";
 
 const replaceRegex = (html: string, regex: [RegExp, string][]) => {
     for (const [r, s] of regex) {
@@ -28,8 +29,9 @@ type CompressParams = {
     attributeMaxLength?: number;
 };
 
-export const htmlcompress = (original: string, params: CompressParams) => {
+export const htmlcompress = (original: string) => {
     try {
+        const params: CompressParams = compressparams;
         const tags = params.removeTags ? new Set(params.removeTags) : null;
 
         const focusOnFirstTag = params.focusOnFirstTag;

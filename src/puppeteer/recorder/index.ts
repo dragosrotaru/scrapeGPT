@@ -1,17 +1,16 @@
 import path from "path";
-import puppeteer, { Page } from "puppeteer";
+import puppeteer from "puppeteer";
 import { Recorder } from "./recorder";
 
 /** opens a web browser and records activity. works with a web extension (not built)
  * can be repurposed to work standalone or in combination
  *
  */
-export const main = async () => {
+export const initialize = async (config: any) => {
     const pathToExtension = path.join(__dirname, "chrome_extension");
     const browser = await puppeteer.launch({
-        executablePath: "/usr/bin/chromium-browser",
-        userDataDir: "./chrome_user_data",
-        headless: false,
+        userDataDir: "./user",
+        headless: config.headless,
         // debuggingPort: 9222,
         args: [
             "--no-sandbox",
@@ -65,34 +64,3 @@ export const main = async () => {
         recorder.stop();
     });
 };
-
-export const waitForNetworkIdle = (page: Page) => {
-    page.on("request", onRequestStarted);
-    page.on("requestfinished", onRequestFinished);
-    page.on("requestfailed", onRequestFinished);
-
-    let inflight = 0;
-    let fulfill: (val?: unknown) => void;
-    const promise = new Promise((x) => (fulfill = x));
-    return promise;
-
-    function done() {
-        page.removeListener("request", onRequestStarted);
-        page.removeListener("requestfinished", onRequestFinished);
-        page.removeListener("requestfailed", onRequestFinished);
-        fulfill();
-    }
-
-    function onRequestStarted() {
-        ++inflight;
-    }
-
-    function onRequestFinished() {
-        --inflight;
-        if (inflight === 0) done();
-    }
-};
-
-/** Scrape the text content of a selector */
-export const scrapeInnerText = (page: Page) => async (selector: string) =>
-    page.evaluate((e) => e?.textContent, await page.waitForSelector(selector));

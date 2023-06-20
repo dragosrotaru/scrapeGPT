@@ -1,20 +1,8 @@
-import puppeteer from "puppeteer";
+import { Page } from "puppeteer";
 
 /** simple method to retrieve html from a webpage */
-export const htmlretrieve = async (url: string) => {
-    const headless = false;
-    const userAgent =
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome";
-    const viewport = {
-        width: 1400,
-        height: 1000,
-    };
-
+export const htmlretrieve = async (url: string, page: Page) => {
     try {
-        const browser = await puppeteer.launch({ headless });
-        const page = await browser.newPage();
-        page.setUserAgent(userAgent);
-        page.setViewport(viewport);
         await page.goto(url);
         const original = await page.content();
         const title = await page.title();
@@ -27,7 +15,6 @@ export const htmlretrieve = async (url: string) => {
         } catch (err) {
             console.log("no description found");
         }
-        await browser.close();
         return {
             original,
             meta: { url, title, description },

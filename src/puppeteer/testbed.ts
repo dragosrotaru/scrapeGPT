@@ -1,4 +1,5 @@
-import puppeteer from "puppeteer";
+import { Page } from "puppeteer";
+import params from "../params.json";
 
 type Events = {
     pageChanges: { url: string }[];
@@ -10,17 +11,12 @@ type Events = {
     xhrRequests: { url: string; status: number }[];
 };
 
-export default async (url: string, code: string, params: unknown) => {
-    const headless = false;
-    const idleTime = 500;
-    const timeout = 5000;
-    const userAgent =
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome";
-    const viewport = {
-        width: 1400,
-        height: 1000,
-    };
-
+export default async (
+    url: string,
+    code: string,
+    props: unknown,
+    page: Page
+) => {
     const events: Events = {
         pageChanges: [],
         formSubmissions: [],
@@ -29,11 +25,6 @@ export default async (url: string, code: string, params: unknown) => {
 
     const getMetrics = (events: Events) => {
         return {
-            headless,
-            idleTime,
-            timeout,
-            userAgent,
-            viewport,
             pageChanges: events.pageChanges.length,
             formSubmissions: events.formSubmissions.length,
             xhrRequests: events.xhrRequests.length,
@@ -41,10 +32,6 @@ export default async (url: string, code: string, params: unknown) => {
     };
 
     try {
-        const browser = await puppeteer.launch({ headless });
-        const page = await browser.newPage();
-        page.setViewport(viewport);
-        page.setUserAgent(userAgent);
         await page.goto(url, { waitUntil: "networkidle2" });
 
         await page.setRequestInterception(true);
@@ -77,7 +64,7 @@ export default async (url: string, code: string, params: unknown) => {
         });
 
         try {
-            await eval(code)(page, params);
+            await eval(code)(page, props);
         } catch (error) {
             return {
                 result: { events },
@@ -90,9 +77,10 @@ export default async (url: string, code: string, params: unknown) => {
             };
         }
 
-        await page.waitForNetworkIdle({ idleTime, timeout });
-
-        browser.close();
+        await page.waitForNetworkIdle({
+            idleTime: params.formfill.waitForIdleTime,
+            timeout: params.formfill.waitForTimeout,
+        });
 
         return {
             result: { events },
