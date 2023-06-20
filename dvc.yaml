@@ -1,106 +1,108 @@
 params:
+  - params.yaml
   - src/params.json
 vars:
-  - url: http://localhost/alpha
-  - path: localhost/alpha
-artifacts:
-  htmlretrieve-error:
-    path: data/${path}/htmlretrieve-error.json
-  htmlcompress-error:
-    path: data/${path}/htmlcompress-error.json
-  formcode-error:
-    path: data/${path}/formcode-error.json
-  formprops-error:
-    path: data/${path}/formprops-error.json
-  formschema-error:
-    path: data/${path}/formschema-error.json
-  formfill-error:
-    path: data/${path}/formfill-error.json
+  - params.yaml
 stages:
   htmlretrieve:
-    cmd: npm start -- html retrieve -u ${url}
-    params:
-      - src/params.json:
-        - htmlretrieve
-        - puppeteer
-    deps:
-      - src/html/retrieve.ts
-    outs:
-      - data/${path}/index.html
-      - data/${path}/index.json
-    metrics:
-      - data/${path}/htmlretrieve-metrics.json
+    foreach: ${pages} # From params.yaml
+    do:
+      frozen: true
+      cmd: npm start -- html retrieve -u ${item.url}
+      params:
+        - params.yaml:
+          - pages
+        - src/params.json:
+          - htmlretrieve
+          - puppeteer
+      deps:
+        - src/html/retrieve.ts
+      outs:
+        - data/${item.path}/index.html
+        - data/${item.path}/index.json
+      metrics:
+        - data/${item.path}/htmlretrieve-metrics.json
   htmlcompress:
-    cmd: npm start -- html compress -u ${url}
-    params:
-      - src/params.json:
-        - htmlcompress
-    deps:
-      - src/html/compress.ts
-      - data/${path}/index.html
-    outs:
-      - data/${path}/index.compressed.html
-    metrics:
-      - data/${path}/htmlcompress-metrics.json  
+    foreach: ${pages} # From params.yaml
+    do:
+      cmd: npm start -- html compress -u ${item.url}
+      params:
+        - src/params.json:
+          - htmlcompress
+      deps:
+        - src/html/compress.ts
+        - data/${item.path}/index.html
+      outs:
+        - data/${item.path}/index.compressed.html
+      metrics:
+        - data/${item.path}/htmlcompress-metrics.json  
   formcode:
-    cmd: npm start -- form code -u ${url}
-    deps:
-      - src/forms/code.ts
-      - src/gpt.ts
-      - src/lint.ts
-      - data/${path}/index.compressed.html
-    params:
-      - src/params.json:
-        - formcode
-    outs:
-      - data/${path}/formcode.js
-      - data/${path}/formcode-lint.json
-      - data/${path}/formcode-result.json
-    metrics:
-      - data/${path}/formcode-metrics.json  
+    foreach: ${pages} # From params.yaml
+    do:
+      cmd: npm start -- form code -u ${item.url}
+      deps:
+        - src/forms/code.ts
+        - src/gpt.ts
+        - src/lint.ts
+        - data/${item.path}/index.compressed.html
+      params:
+        - src/params.json:
+          - formcode
+      outs:
+        - data/${item.path}/formcode.js
+        - data/${item.path}/formcode-lint.json
+        - data/${item.path}/formcode-result.json
+      metrics:
+        - data/${item.path}/formcode-metrics.json  
   formprops:
-    cmd: npm start -- form props -u ${url}
-    deps:
-      - src/forms/props.ts
-      - src/gpt.ts
-      - data/${path}/index.json
-      - data/${path}/formcode.js
-    params:
-      - src/params.json:
-        - formprops
-    outs:
-      - data/${path}/formprops.json
-      - data/${path}/formprops-result.json
-    metrics:
-      - data/${path}/formprops-metrics.json  
+    foreach: ${pages} # From params.yaml
+    do:
+      cmd: npm start -- form props -u ${item.url}
+      deps:
+        - src/forms/props.ts
+        - src/gpt.ts
+        - data/${item.path}/index.json
+        - data/${item.path}/formcode.js
+      params:
+        - src/params.json:
+          - formprops
+      outs:
+        - data/${item.path}/formprops.json
+        - data/${item.path}/formprops-result.json
+      metrics:
+        - data/${item.path}/formprops-metrics.json  
   formschema:
-    cmd: npm start -- form schema -u ${url}
-    deps:
-      - src/forms/schema.ts
-      - src/json
-      - src/lint.ts
-      - data/${path}/formprops.json
-    params:
-      - src/params.json:
-        - formschema
-    outs:
-      - data/${path}/formschema.js
-      - data/${path}/formschema-lint.json
-      - data/${path}/formschema-result.json
-    metrics:
-      - data/${path}/formschema-metrics.json
+    foreach: ${pages} # From params.yaml
+    do:
+      cmd: npm start -- form schema -u ${item.url}
+      deps:
+        - src/forms/schema.ts
+        - src/json
+        - src/lint.ts
+        - data/${item.path}/formprops.json
+      params:
+        - src/params.json:
+          - formschema
+      outs:
+        - data/${item.path}/formschema.js
+        - data/${item.path}/formschema-lint.json
+        - data/${item.path}/formschema-result.json
+      metrics:
+        - data/${item.path}/formschema-metrics.json
   formfill:
-    cmd: npm start -- form fill -u ${url}
-    deps:
-      - src/puppeteer
-      - data/${path}/index.json
-      - data/${path}/formcode.js
-      - data/${path}/formprops.json
-    params:
-      - src/params.json:
-        - formfill
-        - puppeteer
-    outs:
-      - data/${path}/formfill-result.json
-    metrics:
-      - data/${path}/formfill-metrics.json
+    foreach: ${pages} # From params.yaml
+    do:
+      cmd: npm start -- form fill -u ${item.url}
+      deps:
+        - src/puppeteer
+        - data/${item.path}/index.json
+        - data/${item.path}/formcode.js
+        - data/${item.path}/formprops.json
+      params:
+        - src/params.json:
+          - formfill
+          - puppeteer
+      outs:
+        - data/${item.path}/formfill-result.json
+      metrics:
+        - data/${item.path}/formfill-metrics.json

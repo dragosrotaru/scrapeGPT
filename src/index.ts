@@ -1,5 +1,4 @@
 import { Option, program } from "commander";
-import { readFile } from "./files";
 import { formcode } from "./forms/code";
 import { formprops } from "./forms/props";
 import { formschema } from "./forms/schema";
@@ -21,6 +20,8 @@ const urlOption = new Option(
     "Webpage url"
 ).makeOptionMandatory();
 
+const closeBrowserOnExit = new Option("-c, --close", "Close browser on exit");
+
 const htmlCMD = cli.command("html");
 const formCMD = cli.command("form");
 
@@ -32,12 +33,21 @@ const formpropsCMD = formCMD.command("props");
 const formschemaCMD = formCMD.command("schema");
 const fillFormCMD = formCMD.command("fill");
 
-retrieveCMD.addOption(urlOption).action(async ({ url }) =>
-    stage("htmlretrieve", [], url, async () => {
-        const page = await getNewPage(await getBrowser())();
-        return timeit(() => htmlretrieve(url, page));
-    })
-);
+retrieveCMD
+    .addOption(urlOption)
+    .addOption(closeBrowserOnExit)
+    .action(async ({ url }) =>
+        stage("htmlretrieve", [], url, async () => {
+            const browser = await getBrowser();
+            const page = await getNewPage(browser)();
+            const res = await timeit(() => htmlretrieve(url, page));
+            if (closeBrowserOnExit) {
+                console.log("closing browser");
+                await browser.close();
+            }
+            return res;
+        })
+    );
 
 compressCMD.addOption(urlOption).action(async ({ url }) =>
     stage("htmlcompress", [["htmlretrieve", "original"]], url, async (deps) => {
@@ -53,7 +63,7 @@ formcodeCMD.addOption(urlOption).action(async ({ url }) =>
         if (!compressed || typeof compressed !== "string") {
             throw new Error("dep missing");
         }
-        return timeit(() => formcode(readFile(compressed)));
+        return timeit(() => formcode(compressed));
     })
 );
 
@@ -82,24 +92,35 @@ formschemaCMD.addOption(urlOption).action(async ({ url }) =>
     })
 );
 
-fillFormCMD.addOption(urlOption).action(async ({ url }) =>
-    stage(
-        "formfill",
-        [
-            ["htmlretrieve", "meta"],
-            ["formcode", "code"],
-            ["formprops", "data"],
-        ],
-        url,
-        async (deps) => {
-            const meta = deps.htmlretrieve?.meta;
-            const code = deps.formcode?.code;
-            const data = deps.formprops?.data;
-            if (!meta || !code || !data) throw new Error("dep missing");
-            const page = await getNewPage(await getBrowser())();
-            return timeit(() => testbed(meta.url, code, data, page));
-        }
-    )
-);
+fillFormCMD
+    .addOption(urlOption)
+    .addOption(closeBrowserOnExit)
+    .action(async ({ url }) =>
+        stage(
+            "formfill",
+            [
+                ["htmlretrieve", "meta"],
+                ["formcode", "code"],
+                ["formprops", "data"],
+            ],
+            url,
+            async (deps) => {
+                const meta = deps.htmlretrieve?.meta;
+                const code = deps.formcode?.code;
+                const data = deps.formprops?.data;
+                if (!meta || !code || !data) throw new Error("dep missing");
+                const browser = await getBrowser();
+                const page = await getNewPage(browser)();
+                const res = await timeit(() =>
+                    testbed(meta.url, code, data, page)
+                );
+                if (closeBrowserOnExit) {
+                    console.log("closing browser");
+                    await browser.close();
+                }
+                return res;
+            }
+        )
+    );
 
 program.parse();
