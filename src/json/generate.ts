@@ -1,6 +1,5 @@
-import prettier from "prettier";
 import z, { ZodTypeAny } from "zod";
-import { eslint } from "../lint";
+import { lintAndFormat } from "../lint";
 import { generateAST } from "./ast";
 import { JSONAST } from "./astTypes";
 import { JSONType } from "./jsonTypes";
@@ -66,20 +65,12 @@ export const generateValidator = (obj: JSONAST): string => {
     return "z.unknown()";
 };
 
-export const generateValidatorWrapped = async (
-    obj: JSONAST
-): Promise<string> => {
+export const generateValidatorWrapped = async (obj: JSONAST) => {
     const schema = generateValidator(obj);
     const code = `
-            const z = require("zod");
-            
-            module.exports.default = ${schema};
+            module.exports.default = (z) => ${schema};
         `;
-    const lintResults = await eslint.lintText(code);
-    return prettier.format(lintResults[0].output as string, {
-        tabWidth: 4,
-        parser: "babel",
-    });
+    return lintAndFormat(code);
 };
 
 /** Generates zod schema code and returns it*/

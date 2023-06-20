@@ -1,185 +1,193 @@
-import GPTTokenizer from "gpt3-tokenizer";
 import { JSDOM } from "jsdom";
+import { countTokens } from "../gpt";
 
-/* Non-renderable  */
-
-const stripAttributes = (html: Document) => {
-    const elements = html.querySelectorAll("*");
-    for (const element of elements) {
-        // Remove all attributes
-        while (element.attributes.length > 0) {
-            element.removeAttribute(element.attributes[0].name);
-        }
+const replaceRegex = (html: string, regex: [RegExp, string][]) => {
+    for (const [r, s] of regex) {
+        html = html.replace(r, s);
     }
-};
-
-const stripClasses = (html: Document) => {
-    const elements = html.querySelectorAll("*");
-    for (const element of elements) {
-        element.removeAttribute("class");
-    }
-};
-
-const stripHead = (html: Document) => {
-    const head = html.querySelector("head");
-    if (head) {
-        head.remove();
-    }
-};
-
-const stripScripts = (html: Document) => {
-    const scripts = html.querySelectorAll("script");
-    for (const script of scripts) {
-        script.remove();
-    }
-};
-
-const stripStyles = (html: Document) => {
-    const styles = html.querySelectorAll("style");
-    for (const style of styles) {
-        style.remove();
-    }
-};
-
-const stripNoScript = (html: Document) => {
-    const noScripts = html.querySelectorAll("noscript");
-    for (const noScript of noScripts) {
-        noScript.remove();
-    }
-};
-
-/* Semantically Meaningful */
-
-const stripEmpty = (html: Document) => {
-    const elements = html.querySelectorAll("*");
-    for (const element of elements) {
-        // if element is an input, don't remove it
-        if (element.tagName === "INPUT") {
-            continue;
-        }
-        if (element.innerHTML === "") {
-            element.remove();
-        }
-    }
-};
-
-const stripStructural = (html: Document) => {
-    const elements = html.querySelectorAll("*");
-    for (const element of elements) {
-        // remove br tags
-        if (element.tagName === "BR") {
-            element.remove();
-        }
-        // remove divs without attributes but keep their children
-        const tag = element.tagName;
-        const hasTag =
-            tag === "DIV" ||
-            tag === "SECTION" ||
-            tag === "ARTICLE" ||
-            tag === "SPAN";
-        if (hasTag && element.attributes.length === 1) {
-            while (element.firstChild) {
-                element.parentNode?.insertBefore(element.firstChild, element);
-            }
-            element.remove();
-        }
-    }
-};
-
-const stripHeaders = (html: Document) => {
-    const header = html.querySelectorAll("header");
-    for (const head of header) {
-        head.remove();
-    }
-};
-
-const stripFooters = (html: Document) => {
-    const footer = html.querySelectorAll("footer");
-    for (const foot of footer) {
-        foot.remove();
-    }
-};
-
-const stripNavs = (html: Document) => {
-    const nav = html.querySelectorAll("nav");
-    for (const n of nav) {
-        n.remove();
-    }
-};
-
-const stripParagrahs = (html: Document, words = 20) => {
-    const p = html.querySelectorAll("p");
-    for (const paragraph of p) {
-        if (paragraph.textContent) {
-            const text = paragraph.innerHTML.replace(/\s+/g, " ").split(" ");
-            if (text.length > words) {
-                paragraph.remove();
-            }
-        }
-    }
-};
-
-const stripLongAttributes = (html: Document, length = 80) => {
-    const elements = html.querySelectorAll("*");
-    for (const element of elements) {
-        for (const attribute of element.attributes) {
-            if (attribute.value.length > length) {
-                element.removeAttribute(attribute.name);
-            }
-        }
-    }
-};
-
-/* String Based */
-
-const stripComments = (html: string) => {
-    const regex = /(<!--.*?-->)|(<!--[\w\W\n\s]+?-->)/g;
-    return html.replace(regex, "");
-};
-
-const stripWhitespace = (html: string) => {
-    html = html.replace(/\s+/g, " ");
-    html = html.replace(/>\s+</g, "><");
     return html;
 };
 
-const stripAll = (html: Document) => {
-    stripHead(html);
-    stripScripts(html);
-    stripStyles(html);
-    stripNoScript(html);
+type CompressParams = {
+    tokenizeInput: boolean;
 
-    stripStructural(html);
-    stripHeaders(html);
-    stripFooters(html);
-    stripNavs(html);
-    stripParagrahs(html);
-    stripLongAttributes(html);
+    focusOnFirstTag?: string;
 
-    stripAttributes(html);
-    stripClasses(html);
-    stripEmpty(html);
+    removeTags?: string[] /* Options: HEAD SCRIPT STYLE NOSCRIPT BR HEADER FOOTER NAV */;
+
+    removeEmpty?: boolean;
+    removeEmptyTagExclusion?: string[] /* Options: inputs */;
+    textMaxLength?: number;
+    textLengthExclusion?: string[] /* Options: type */;
+
+    removeStructural?: string[]; // Options: div section article span
+
+    removeAttributeTagExclusion?: string[] /* Options: inputs */;
+    removeAttributes?: string[] | "all" /* Options: class all */;
+    removeAttributeExclusion?: string[] /* Options: type */;
+    attributeMaxLength?: number;
 };
 
-const postProcess = (html: string) => {
-    return stripWhitespace(stripComments(html));
-};
+export const htmlcompress = (original: string, params: CompressParams) => {
+    try {
+        const tags = params.removeTags ? new Set(params.removeTags) : null;
 
-export const compress = (html: string, tokenizeInput = false) => {
-    const tokenizer = new GPTTokenizer({ type: "gpt3" });
+        const focusOnFirstTag = params.focusOnFirstTag;
 
-    const document = new JSDOM(html).window.document;
+        const removeStructural = params.removeStructural
+            ? new Set(params.removeStructural)
+            : null;
 
-    stripAll(document);
-    const compressed = postProcess(document.documentElement.outerHTML);
+        const removeEmpty = params.removeEmpty;
+        const removeEmptyTagExclusion = params.removeEmptyTagExclusion
+            ? new Set(params.removeEmptyTagExclusion)
+            : null;
+        const textMaxLength = params.textMaxLength;
+        const textLengthExclusion = params.textLengthExclusion
+            ? new Set(params.textLengthExclusion)
+            : null;
 
-    const initial = tokenizeInput ? tokenizer.encode(html).bpe.length : null;
-    const after = tokenizer.encode(compressed).bpe.length;
-    return {
-        compressed,
-        metrics: {
-            initial,
-            after,
-        },
-    };
+        const attributeTagExclusion = params.removeAttributeTagExclusion
+            ? new Set(params.removeAttributeTagExclusion)
+            : null;
+        const allAttributes = params.removeAttributes === "all";
+        const attributes = params.removeAttributes
+            ? new Set(params.removeAttributes)
+            : null;
+        const attributeExclusion = params.removeAttributeExclusion
+            ? new Set(params.removeAttributeExclusion)
+            : null;
+        const attributeMaxLength = params.attributeMaxLength;
+
+        const start = process.hrtime();
+
+        const html = new JSDOM(original).window.document;
+
+        if (focusOnFirstTag) {
+            const tag = html.querySelector(focusOnFirstTag);
+            if (tag) {
+                while (tag?.previousSibling) {
+                    tag.parentNode?.removeChild(tag.previousSibling);
+                }
+                while (tag?.nextSibling) {
+                    tag.parentNode?.removeChild(tag.nextSibling);
+                }
+            }
+        }
+
+        const elements = html.querySelectorAll("*");
+        for (const element of elements) {
+            const tag = element.tagName;
+
+            // Remove tags
+            if (tags?.has(tag)) {
+                element.remove();
+                continue;
+            }
+
+            // Remove structural tags
+            if (removeStructural?.has(tag)) {
+                if (element.attributes.length === 1) {
+                    while (element.firstChild) {
+                        element.parentNode?.insertBefore(
+                            element.firstChild,
+                            element
+                        );
+                    }
+                    element.remove();
+                }
+            }
+
+            // Remove empty tags
+            if (
+                removeEmpty &&
+                element.innerHTML === "" &&
+                !removeEmptyTagExclusion?.has(tag)
+            ) {
+                element.remove();
+                continue;
+            }
+
+            // Remove long text
+            if (textMaxLength) {
+                const text = element.textContent;
+                if (
+                    text &&
+                    text.length > textMaxLength &&
+                    !textLengthExclusion?.has(tag)
+                ) {
+                    element.textContent = text.slice(0, textMaxLength);
+                }
+            }
+
+            // Dont remove any attributes for these tags
+            if (attributeTagExclusion?.has(tag)) {
+                continue;
+            }
+
+            // iterate over all attributes
+            if (allAttributes || attributeMaxLength) {
+                while (element.attributes.length > 0) {
+                    const attribute = element.attributes[0];
+                    if (attributeExclusion?.has(attribute.name)) {
+                        continue;
+                    }
+
+                    if (allAttributes) {
+                        element.removeAttribute(attribute.name);
+                        continue;
+                    }
+
+                    if (attributes?.has(attribute.name)) {
+                        element.removeAttribute(attribute.name);
+                        continue;
+                    }
+
+                    if (
+                        attributeMaxLength &&
+                        attribute.value.length > attributeMaxLength
+                    ) {
+                        element.removeAttribute(attribute.name);
+                    }
+                }
+                continue;
+            }
+
+            // remove specific attributes (more efficient)
+            if (attributes)
+                for (const attribute of attributes) {
+                    element.removeAttribute(attribute);
+                }
+        }
+
+        const compressed = replaceRegex(html.documentElement.outerHTML, [
+            [/(<!--.*?-->)|(<!--[\w\W\n\s]+?-->)/g, ""], // Remove comments
+            [/\s+/g, " "], // Remove whitespace
+            [/>\s+</g, "><"], // Remove whitespace between tags
+        ]);
+
+        const finish = process.hrtime(start);
+
+        const originalTokens = params.tokenizeInput
+            ? countTokens(original)
+            : null;
+        const compressedTokens = countTokens(compressed);
+        return {
+            compressed,
+            metrics: {
+                originalTokens,
+                compressedTokens,
+                ratio: originalTokens
+                    ? compressedTokens / originalTokens
+                    : null,
+                time: finish[0] + finish[1] / 1e9,
+                completed: true,
+            },
+        };
+    } catch (error) {
+        return {
+            error: (error as Error).toString(),
+            metrics: { completed: false },
+        };
+    }
 };

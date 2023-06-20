@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
+import GPTTokenizer from "gpt3-tokenizer";
 import { Configuration, OpenAIApi } from "openai";
 import { JSONType } from "./json/jsonTypes";
-import { timeit } from "./util";
 
 dotenv.config();
 if (!process.env["OPENAI"]) {
@@ -12,6 +12,8 @@ const openai = new OpenAIApi(
         apiKey: process.env["OPENAI"],
     })
 );
+
+const tokenizer = new GPTTokenizer({ type: "gpt3" });
 
 const codeBlockRegex = (language: string) =>
     new RegExp(`\`\`\`${language}([\\s\\S]+?)\`\`\``);
@@ -25,63 +27,61 @@ const matchRegex = (regex: RegExp, string: string) => {
     return null;
 };
 
-const extractFirstCodeBlock = (response: string, language: string[]) => {
+const extractFirstCodeBlock = (input: string, language: string[]) => {
     for (const lang of language) {
-        const code = matchRegex(codeBlockRegex(lang), response);
+        const code = matchRegex(codeBlockRegex(lang), input);
         if (code) {
-            return code;
+            return { code, language: lang };
         }
     }
-    return null;
+    return { code: input, language: null };
 };
 
 const requestGPT = (system: string) => async (prompt: string) => {
-    const {
-        result: { data, status, statusText },
-        time,
-    } = await await timeit(() =>
-        openai.createChatCompletion({
-            model: "gpt-3.5-turbo-16k-0613",
-            messages: [
-                {
-                    role: "system",
-                    content: system,
-                },
-                {
-                    role: "user",
-                    content: prompt,
-                },
-            ],
-        })
-    );
+    const { data, statusText, status } = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo-16k-0613",
+        messages: [
+            {
+                role: "system",
+                content: system,
+            },
+            {
+                role: "user",
+                content: prompt,
+            },
+        ],
+    });
     const content = data.choices[0]?.message?.content;
-    return { content, data, status, statusText, time };
+    return { content, data, status, statusText };
 };
 
 const requestCode =
     (language: string[], system: string) => async (prompt: string) => {
         const response = await requestGPT(system)(prompt);
-        const code = response.content
+        const extract = response.content
             ? extractFirstCodeBlock(response.content, language)
             : null;
         return {
             ...response,
-            code,
+            code: extract?.code,
+            language: extract?.language,
             parameters: {
                 sysPrompt: system,
                 sysPromptLength: system.length,
-                language,
-                prompt,
+                sysPromptTokens: countTokens(system),
                 promptLength: prompt.length,
+                promptTokens: countTokens(prompt),
             },
         };
     };
 
-// TODO measure system prompt length and add it to metrics
+export const countTokens = (input: string) =>
+    tokenizer.encode(input).bpe.length;
 
 export const requestJavascript = async (prompt: string) => {
-    const systemPrompt =
-        "return only correct javascript, do not include comments, do not leave anything to be filled in by the user";
+    const systemPrompt = `return only one correct modern javascript function exported with module.exports.default.
+    do not include comments, do not leave anything to be filled in by the user, do not include prose,
+    do not include examples, do not execute the function.`;
     return requestCode(["javascript", "js"], systemPrompt)(prompt);
 };
 
