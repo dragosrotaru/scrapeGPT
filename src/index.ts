@@ -1,33 +1,14 @@
 import { Option, program } from "commander";
-import {
-    fileExists,
-    filePaths,
-    makeDirIfNotExists,
-    overwriteFile,
-    overwriteJSON,
-    readFile,
-    readJSON,
-} from "./files";
-import { generateFormCode, generateFormProps } from "./forms/generate";
-import { compress } from "./html/compress";
-import { Files, Stage, StageMethod } from "./interfaces";
-import { generateAST } from "./json/ast";
-import {
-    generateValidatorDynamic,
-    generateValidatorWrapped,
-} from "./json/generate";
-import { retrieve } from "./retrieve";
-import testbed from "./retrieve/testbed";
-import { timeit } from "./util";
+import { readFile } from "./files";
+import { formcode } from "./forms/code";
+import { formprops } from "./forms/props";
+import { formschema } from "./forms/schema";
+import { htmlcompress } from "./html/compress";
+import { htmlretrieve } from "./html/retrieve";
 
-const isUrl = (s: string) => {
-    try {
-        new URL(s);
-        return true;
-    } catch (err) {
-        return false;
-    }
-};
+import testbed from "./puppeteer/testbed";
+import { stage } from "./stage";
+import { timeit } from "./util";
 
 const cli = program
     .name("scrapeGPT")
@@ -40,108 +21,93 @@ const urlOption = new Option(
 ).makeOptionMandatory();
 
 const htmlCMD = cli.command("html");
+const formCMD = cli.command("form");
 
 const retrieveCMD = htmlCMD.command("retrieve");
 const compressCMD = htmlCMD.command("compress");
 
-const formCMD = cli.command("form");
-
 const formcodeCMD = formCMD.command("code");
 const formpropsCMD = formCMD.command("props");
 const formschemaCMD = formCMD.command("schema");
-const fillFormCMD = cli.command("fill");
+const fillFormCMD = formCMD.command("fill");
 
-const keyInFilesGuard = (key: string): key is Files => {
-    return key in filePaths("", "retrieve");
-};
-
-const stage = async (
-    name: Stage,
-    dependencies: Files[],
-    url: string,
-    method: StageMethod
-) => {
-    if (!isUrl(url)) {
-        console.log("invalid url");
-        return;
-    }
-    const paths = filePaths(url, name);
-    makeDirIfNotExists(paths.dir);
-
-    for (const dependency of dependencies) {
-        if (!fileExists(paths[dependency])) {
-            console.log(`${dependency} does not exist`);
-            return;
-        }
-    }
-
-    const result = await method(paths);
-
-    Object.entries(result).forEach(([key, value]) => {
-        // TODO refactor interface to be Exact/Partial
-        if (!keyInFilesGuard(key)) {
-            console.log(`invalid key: ${key}`);
-            return;
-        }
-        if (!value) {
-            return;
-        }
-        if (typeof value !== "string") {
-            overwriteJSON(paths[key], value);
-            return;
-        }
-        overwriteFile(paths[key], value);
-    });
-};
-
-retrieveCMD
-    .addOption(urlOption)
-    .action(async ({ url }) => stage("retrieve", [], url, () => retrieve(url)));
-
-compressCMD.addOption(urlOption).action(async ({ url, tokenize }) =>
-    stage("compress", ["original"], url, async (paths) => {
-        return compress(readFile(paths.original), tokenize);
+retrieveCMD.addOption(urlOption).action(async ({ url }) =>
+    stage("htmlretrieve", [], url, () => {
+        return timeit(() => htmlretrieve(url));
     })
 );
 
+compressCMD
+    .addOption(urlOption)
+    .action(async ({ url, tokenize: tokenizeInput = true }) =>
+        stage(
+            "htmlcompress",
+            [["htmlretrieve", "original"]],
+            url,
+            async (deps) => {
+                const original = deps.htmlretrieve?.original;
+                if (!original) throw new Error("dep missing");
+                return timeit(async () =>
+                    htmlcompress(original, {
+                        tokenizeInput,
+                    })
+                );
+            }
+        )
+    );
+
 formcodeCMD.addOption(urlOption).action(async ({ url }) =>
-    stage("formcode", ["compressed"], url, async (paths) => {
-        return generateFormCode(readFile(paths.compressed));
+    stage("formcode", [["htmlcompress", "compressed"]], url, async (deps) => {
+        const compressed = deps.htmlcompress?.compressed;
+        if (!compressed || typeof compressed !== "string") {
+            throw new Error("dep missing");
+        }
+        return timeit(() => formcode(readFile(compressed)));
     })
 );
 
 formpropsCMD.addOption(urlOption).action(async ({ url }) =>
-    stage("formprops", ["meta", "code"], url, async (paths) => {
-        return generateFormProps(readFile(paths.code), readJSON(paths.meta));
-    })
+    stage(
+        "formprops",
+        [
+            ["htmlretrieve", "meta"],
+            ["formcode", "code"],
+        ],
+        url,
+        async (deps) => {
+            const meta = deps.htmlretrieve?.meta;
+            const code = deps.formcode?.code;
+            if (!meta || !code) throw new Error("dep missing");
+            return timeit(() => formprops(code, meta));
+        }
+    )
 );
 
 formschemaCMD.addOption(urlOption).action(async ({ url }) =>
-    stage("formschema", ["props"], url, async (paths) => {
-        const props = readJSON(paths.props);
-        const {
-            result: { schema, zod },
-            time,
-        } = await timeit(async () => {
-            const ast = generateAST(props, undefined);
-            const schema = await generateValidatorWrapped(ast);
-            const zod = generateValidatorDynamic(ast);
-            return { schema, zod };
-        });
-        zod.parse(props);
-        const expr = eval(schema);
-        expr.parse(props);
-        return { schema, metrics: { time } };
+    stage("formschema", [["formprops", "data"]], url, async (deps) => {
+        const data = deps.formprops?.data;
+        if (!data) throw new Error("dep missing");
+        return timeit(() => formschema(data));
     })
 );
 
 fillFormCMD.addOption(urlOption).action(async ({ url }) =>
-    stage("formfill", ["meta", "code", "props"], url, async (paths) => {
-        const code = readFile(paths.code);
-        const props = readJSON(paths.props);
-        const meta = readJSON(paths.meta);
-        return testbed(meta.url, code, props);
-    })
+    stage(
+        "formfill",
+        [
+            ["htmlretrieve", "meta"],
+            ["formcode", "code"],
+            ["formprops", "data"],
+        ],
+        url,
+        async (deps) => {
+            const meta = deps.htmlretrieve?.meta;
+            const code = deps.formcode?.code;
+            const data = deps.formprops?.data;
+            if (!meta || !code || !data) throw new Error("dep missing");
+            return timeit(() => testbed(meta.url, code, data));
+        }
+    )
 );
 
 program.parse();

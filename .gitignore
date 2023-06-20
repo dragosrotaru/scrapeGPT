@@ -4,3 +4,4 @@ build
 user
 mobile
 data
+!data/**/*.dvc

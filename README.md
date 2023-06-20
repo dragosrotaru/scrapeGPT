@@ -58,10 +58,9 @@ Given that you have the url to an indexing webpage or results page, the basic pr
 ### Structural and Testability
 
 -   add parsing of params.json in all the methods, use values
+-   refactor stage interfaces to be Exact/Partial return type and infer deps
 -   create helper function to add urls to params
 -   add metrics aggregation methods
--   add metrics
--   add token count metrics to user/system prompts, including empty, and to the outputs
 
 -   refactor usage of puppeteer, wrapper code and retriever to reuse browser
 -   generate synthetic test data using gpt

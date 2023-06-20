@@ -1,8 +1,8 @@
 import { filePaths } from "./files";
 
 export type Stage =
-    | "retrieve"
-    | "compress"
+    | "htmlretrieve"
+    | "htmlcompress"
     | "formcode"
     | "formprops"
     | "formschema"
@@ -10,6 +10,9 @@ export type Stage =
 
 export type Files = keyof ReturnType<typeof filePaths>;
 export type StageResult = Partial<{ [key in Files]: unknown }>;
+export type StageDependencies = Partial<
+    Record<Stage, Partial<Record<Files, any>>>
+>;
 export type StageMethod = (
-    paths: ReturnType<typeof filePaths>
+    dependencies: StageDependencies
 ) => Promise<StageResult>;

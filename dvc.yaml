@@ -1,81 +1,86 @@
+params:
+  - params.json
+vars:
+  - url: http://localhost/alpha
+  - path: localhost/alpha
 stages:
-  retrieve:
-    foreach: ${urls}
-    do:
-      cmd: npm start -- html retrieve -u ${key}
-      params:
-        - retrieve
-      deps:
-        - src
-      outs:
-        - data/${item.path}/index.html
-        - data/${item.path}/retrieve-error.json
-      metrics:
-        - data/${item.path}/retrieve-metrics.json
-      frozen: true
-  compress:
-    cmd: npm start -- html compress -u ${key}
+  htmlretrieve:
+    cmd: npm start -- html retrieve -u ${url}
     params:
-      - compress
+      - params.json:
+        - htmlretrieve
     deps:
       - src
-      - data/${item.path}/index.html
     outs:
-      - data/${item.path}/compressed.html
-      - data/${item.path}/compress-error.json
+      - data/${path}/index.html
+      - data/${path}/index.json
     metrics:
-      - data/${item.path}/compress-metrics.json  
+      - data/${path}/htmlretrieve-metrics.json
+    frozen: true
+  htmlcompress:
+    cmd: npm start -- html compress -u ${url}
+    params:
+      - params.json:
+        - htmlcompress
+    deps:
+      - src
+      - data/${path}/index.html
+    outs:
+      - data/${path}/index.compressed.html
+    metrics:
+      - data/${path}/htmlcompress-metrics.json  
   formcode:
-    cmd: npm start -- form code -u ${key}
+    cmd: npm start -- form code -u ${url}
     deps:
       - src
-      - data/${item.path}/compressed.html
+      - data/${path}/index.compressed.html
     params:
-      - formcode
+      - params.json:
+        - formcode
     outs:
-      - data/${item.path}/code.js
-      - data/${item.path}/lint.json
-      - data/${item.path}/formcode-error.json
-      - data/${item.path}/formcode-response.json
+      - data/${path}/formcode.js
+      - data/${path}/formcode-lint.json
+      - data/${path}/formcode-result.json
     metrics:
-      - data/${item.path}/formcode-metrics.json  
+      - data/${path}/formcode-metrics.json  
   formprops:
-    cmd: npm start -- form props -u ${key}
+    cmd: npm start -- form props -u ${url}
     deps:
       - src
-      - data/${item.path}/meta.json
-      - data/${item.path}/code.js
+      - data/${path}/index.json
+      - data/${path}/formcode.js
     params:
-      - formprops
+      - params.json:
+        - formprops
     outs:
-      - data/${item.path}/props.json
-      - data/${item.path}/formprops-error.json
-      - data/${item.path}/formprops-response.json
+      - data/${path}/formprops.json
+      - data/${path}/formprops-result.json
     metrics:
-      - data/${item.path}/formprops-metrics.json  
+      - data/${path}/formprops-metrics.json  
   formschema:
-    cmd: npm start -- form schema -u ${key}
+    cmd: npm start -- form schema -u ${url}
     deps:
       - src
-      - data/${item.path}/props.json
+      - data/${path}/formprops.json
     params:
+      - params.json:
         - formschema
     outs:
-      - data/${item.path}/schema.js
-      - data/${item.path}/formschema-error.json
+      - data/${path}/formschema.js
+      - data/${path}/formschema-lint.json
     metrics:
-      - data/${item.path}/formschema-metrics.json
+      - data/${path}/formschema-metrics.json
   formfill:
-    cmd: npm start -- form fill -u ${key}
+    cmd: npm start -- form fill -u ${url}
     deps:
       - src
-      - data/${item.path}/meta.json
-      - data/${item.path}/code.js
-      - data/${item.path}/props.json
+      - data/${path}/index.json
+      - data/${path}/formcode.js
+      - data/${path}/formprops.json
     params:
+      - params.json:
         - formfill
     outs:
-      - data/${item.path}/result.json
-      - data/${item.path}/formfill-error.json
+      - data/${path}/formfill-result.json
     metrics:
-      - data/${item.path}/formfill-metrics.json
+      - data/${path}/formfill-metrics.json

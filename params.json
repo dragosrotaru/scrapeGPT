@@ -1,13 +1,14 @@
 {
-    "retrieve": {
+    "htmlretrieve": {
         "skipIfExists": true
     },
-    "compress": {
+    "htmlcompress": {
         "order": []
     },
-    "genformcode": {},
-    "genformprops": {},
-    "genformschema": {},
+    "formcode": {},
+    "formprops": {},
+    "formschema": {},
+    "formfill": {},
     "urls": {
         "http://localhost/alpha/": "localhost-alpha",
         "https://imdb.com/": "imdb-com"

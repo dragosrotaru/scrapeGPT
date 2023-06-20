@@ -2,3 +2,146 @@ schema: '2.0'
 stages:
   compress:
     cmd: npm start -- compress -u http://localhost -i alpha
+  htmlretrieve:
+    cmd: npm start -- html retrieve -u http://localhost/alpha
+    deps:
+    - path: src
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    params:
+      params.json:
+        htmlretrieve:
+          skipIfExists: true
+    outs:
+    - path: data/localhost/alpha/htmlretrieve-metrics.json
+      md5: 0926d4ca9671c49452d4af3955469f94
+      size: 27
+    - path: data/localhost/alpha/index.html
+      md5: c909a9dacaca4d36451a6fc0122ee4cb
+      size: 3860
+    - path: data/localhost/alpha/index.json
+      md5: 28d110937253136c6cb8eb5a56843e59
+      size: 104
+  htmlcompress:
+    cmd: npm start -- html compress -u http://localhost/alpha
+    deps:
+    - path: data/localhost/alpha/index.html
+      md5: c909a9dacaca4d36451a6fc0122ee4cb
+      size: 3860
+    - path: src
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    params:
+      params.json:
+        htmlcompress:
+          order: []
+    outs:
+    - path: data/localhost/alpha/htmlcompress-metrics.json
+      md5: e7cd2131439fd79b3acd9247b1249cfe
+      size: 141
+    - path: data/localhost/alpha/index.compressed.html
+      md5: 339927ac8d2cdd6a9ef3aebb9419a02d
+      size: 2663
+  formcode:
+    cmd: npm start -- form code -u http://localhost/alpha
+    deps:
+    - path: data/localhost/alpha/index.compressed.html
+      md5: 339927ac8d2cdd6a9ef3aebb9419a02d
+      size: 2663
+    - path: src
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    params:
+      params.json:
+        formcode: {}
+    outs:
+    - path: data/localhost/alpha/formcode-lint.json
+      md5: ec285c302f0ef1f9e6d528137507a146
+      size: 285
+    - path: data/localhost/alpha/formcode-metrics.json
+      md5: eaf4fbb76ee8ce683adc7a189e661072
+      size: 1072
+    - path: data/localhost/alpha/formcode-result.json
+      md5: 5e978443e9623f13270b4d923d71ea3a
+      size: 4439
+    - path: data/localhost/alpha/formcode.js
+      md5: f861e4bd398cae558e12aeb7b9530711
+      size: 907
+  formprops:
+    cmd: npm start -- form props -u http://localhost/alpha
+    deps:
+    - path: data/localhost/alpha/formcode.js
+      md5: f861e4bd398cae558e12aeb7b9530711
+      size: 907
+    - path: data/localhost/alpha/index.json
+      md5: 28d110937253136c6cb8eb5a56843e59
+      size: 104
+    - path: src
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    params:
+      params.json:
+        formprops: {}
+    outs:
+    - path: data/localhost/alpha/formprops-metrics.json
+      md5: 8cffa26c5d7e14703006d89d431df0df
+      size: 871
+    - path: data/localhost/alpha/formprops-result.json
+      md5: 5414f286d807827a6f4528e4e19ffa5e
+      size: 1878
+    - path: data/localhost/alpha/formprops.json
+      md5: 0c1c36fe5f35b5a580f8a695f37ad307
+      size: 153
+  formschema:
+    cmd: npm start -- form schema -u http://localhost/alpha
+    deps:
+    - path: data/localhost/alpha/formprops.json
+      md5: 0c1c36fe5f35b5a580f8a695f37ad307
+      size: 153
+    - path: src
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    params:
+      params.json:
+        formschema: {}
+    outs:
+    - path: data/localhost/alpha/formschema-lint.json
+      md5: ec285c302f0ef1f9e6d528137507a146
+      size: 285
+    - path: data/localhost/alpha/formschema-metrics.json
+      md5: 323838152e5cc5cc23de45705fd02462
+      size: 27
+    - path: data/localhost/alpha/formschema.js
+      md5: c8dc822ea066135458564684a49aa6ef
+      size: 249
+  formfill:
+    cmd: npm start -- form fill -u http://localhost/alpha
+    deps:
+    - path: data/localhost/alpha/formcode.js
+      md5: f861e4bd398cae558e12aeb7b9530711
+      size: 907
+    - path: data/localhost/alpha/formprops.json
+      md5: 0c1c36fe5f35b5a580f8a695f37ad307
+      size: 153
+    - path: data/localhost/alpha/index.json
+      md5: 28d110937253136c6cb8eb5a56843e59
+      size: 104
+    - path: src
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    params:
+      params.json:
+        formfill: {}
+    outs:
+    - path: data/localhost/alpha/formfill-metrics.json
+      md5: 0a2159dac779ff3b259928588b3ccd24
+      size: 354
+    - path: data/localhost/alpha/formfill-result.json
+      md5: d1384eb7cf8ed59b876811862d0e82cb
+      size: 282
