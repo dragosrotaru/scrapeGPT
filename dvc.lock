@@ -114,8 +114,11 @@ stages:
       md5: ec285c302f0ef1f9e6d528137507a146
       size: 285
     - path: data/localhost/alpha/formschema-metrics.json
-      md5: 323838152e5cc5cc23de45705fd02462
+      md5: e2fc055e0328ae9e79d28449d2b70567
       size: 27
+    - path: data/localhost/alpha/formschema-result.json
+      md5: 0d99d3a5ced92b9d16297658cc79e927
+      size: 222
     - path: data/localhost/alpha/formschema.js
       md5: c8dc822ea066135458564684a49aa6ef
       size: 249

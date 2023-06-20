@@ -3,6 +3,19 @@ params:
 vars:
   - url: http://localhost/alpha
   - path: localhost/alpha
+artifacts:
+  htmlretrieve-error:
+    path: data/${path}/htmlretrieve-error.json
+  htmlcompress-error:
+    path: data/${path}/htmlcompress-error.json
+  formcode-error:
+    path: data/${path}/formcode-error.json
+  formprops-error:
+    path: data/${path}/formprops-error.json
+  formschema-error:
+    path: data/${path}/formschema-error.json
+  formfill-error:
+    path: data/${path}/formfill-error.json
 stages:
   htmlretrieve:
     cmd: npm start -- html retrieve -u ${url}
@@ -16,7 +29,6 @@ stages:
       - data/${path}/index.json
     metrics:
       - data/${path}/htmlretrieve-metrics.json
-    frozen: true
   htmlcompress:
     cmd: npm start -- html compress -u ${url}
     params:
@@ -68,6 +80,7 @@ stages:
     outs:
       - data/${path}/formschema.js
       - data/${path}/formschema-lint.json
+      - data/${path}/formschema-result.json
     metrics:
       - data/${path}/formschema-metrics.json
   formfill:
