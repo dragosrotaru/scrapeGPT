@@ -24,6 +24,7 @@ const closeBrowserOnExit = new Option("-c, --close", "Close browser on exit");
 
 const htmlCMD = cli.command("html");
 const formCMD = cli.command("form");
+const utilCMD = cli.command("util");
 
 const retrieveCMD = htmlCMD.command("retrieve");
 const compressCMD = htmlCMD.command("compress");
@@ -122,5 +123,9 @@ fillFormCMD
             }
         )
     );
+
+utilCMD.command("browser").action(async () => {
+    getBrowser();
+});
 
 program.parse();

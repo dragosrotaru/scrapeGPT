@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { Files, Stage } from "./interfaces";
+import { Files, Stage, stages } from "./interfaces";
 
 export const fileExists = (filePath: string) => fs.existsSync(filePath);
 
@@ -76,6 +76,14 @@ export const filePaths = (url: string, stage: Stage) => {
         result: resultFilePath(dir, stage),
         metrics: metricsFilePath(dir, stage),
     };
+};
+
+export const metricsFilePaths = (url: string): Record<Stage, string> => {
+    const dir = dirPath(url);
+    return stages.reduce((acc, stage) => {
+        acc[stage] = metricsFilePath(dir, stage);
+        return acc;
+    }, {} as Record<Stage, string>);
 };
 
 export const keyInFilesGuard = (key: string): key is Files => {

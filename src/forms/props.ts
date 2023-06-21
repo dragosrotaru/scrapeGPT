@@ -55,7 +55,9 @@ export const formprops = async (
                 emptyPrompt: emptyPrompt,
                 model: result.data.model,
                 object: result.data.object,
-                usage: result.data.usage,
+                promptTokens: result.data.usage?.prompt_tokens,
+                completionTokens: result.data.usage?.completion_tokens,
+                totalTokens: result.data.usage?.total_tokens,
             },
             result: {
                 created: result.data.created,

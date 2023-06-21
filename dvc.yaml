@@ -1,11 +1,9 @@
 params:
-  - params.yaml
+  - src/sites.json
   - src/params.json
-vars:
-  - params.yaml
 stages:
   htmlretrieve:
-    foreach: ${pages} # From params.yaml
+    foreach: ${pages} 
     do:
       frozen: true
       cmd: npm start -- html retrieve -u ${item.url}
@@ -23,7 +21,7 @@ stages:
       metrics:
         - data/${item.path}/htmlretrieve-metrics.json
   htmlcompress:
-    foreach: ${pages} # From params.yaml
+    foreach: ${pages} 
     do:
       cmd: npm start -- html compress -u ${item.url}
       params:
@@ -37,7 +35,7 @@ stages:
       metrics:
         - data/${item.path}/htmlcompress-metrics.json  
   formcode:
-    foreach: ${pages} # From params.yaml
+    foreach: ${pages} 
     do:
       cmd: npm start -- form code -u ${item.url}
       deps:
@@ -55,7 +53,7 @@ stages:
       metrics:
         - data/${item.path}/formcode-metrics.json  
   formprops:
-    foreach: ${pages} # From params.yaml
+    foreach: ${pages} 
     do:
       cmd: npm start -- form props -u ${item.url}
       deps:
@@ -72,7 +70,7 @@ stages:
       metrics:
         - data/${item.path}/formprops-metrics.json  
   formschema:
-    foreach: ${pages} # From params.yaml
+    foreach: ${pages} 
     do:
       cmd: npm start -- form schema -u ${item.url}
       deps:
@@ -90,7 +88,7 @@ stages:
       metrics:
         - data/${item.path}/formschema-metrics.json
   formfill:
-    foreach: ${pages} # From params.yaml
+    foreach: ${pages} 
     do:
       cmd: npm start -- form fill -u ${item.url}
       deps:
