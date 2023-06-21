@@ -1,0 +1,12 @@
+{
+    "pages": [
+        {
+            "url": "http://localhost/alpha/",
+            "path": "localhost/alpha"
+        },
+        {
+            "url": "http://localhost/beta/",
+            "path": "localhost/beta"
+        }
+    ]
+}

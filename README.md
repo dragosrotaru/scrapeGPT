@@ -59,7 +59,6 @@ Given that you have the url to an indexing webpage or results page, the basic pr
 
 -   add metrics aggregation methods and produce metrics in the standard format
 -   refactor usage of puppeteer to use single browser instance
--   create helper function to add urls to params
 -   generate synthetic test data using gpt
 -   implement use of experiments
 
@@ -141,3 +140,33 @@ try again
 5. generate validation functions
 6. generate documented and typed SDK
 7. generate throttling, change detection, identity management, etc scaffolding
+
+## Business Strategy
+
+-   sell scraping as a service finding clients on upwork (scrape upwork and process those jobs for insights)
+-   tailor the system for a specific task, like auto applying to jobs.
+-   pregenerate datasets
+-   automate lead gen
+-   scraping platform (more control into how it operates)
+-   scraping sdk
+
+## Blocker Detection
+
+-   popup banner
+-   geo block
+-   login
+-   capacha
+-   data stored in image
+
+## Website Classification
+
+For every page, classify dom elements based on their content type:
+
+-   contact - phone, email, address, name, hours, etc
+-   datamember - contains the details for a particular instance of a dataset
+-   dataset - contains a list of structured data, possibly containing a form as well for filter/search
+-   information - singleton datamember
+-   form - submission form
+-   application - complex webpage representing a rich model
+
+##

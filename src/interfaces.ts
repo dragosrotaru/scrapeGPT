@@ -1,12 +1,15 @@
 import { filePaths } from "./files";
 
-export type Stage =
-    | "htmlretrieve"
-    | "htmlcompress"
-    | "formcode"
-    | "formprops"
-    | "formschema"
-    | "formfill";
+export const stages = [
+    "htmlretrieve",
+    "htmlcompress",
+    "formcode",
+    "formprops",
+    "formschema",
+    "formfill",
+] as const;
+
+export type Stage = (typeof stages)[number];
 
 export type Files = keyof ReturnType<typeof filePaths>;
 export type StageResult = Partial<{ [key in Files]: unknown }>;

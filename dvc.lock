@@ -315,6 +315,7 @@ stages:
           - FORM
           - SELECT
           - BUTTON
+          - FIELD
           removeStructural:
           - DIV
           - SECTION
@@ -336,7 +337,7 @@ stages:
           attributeMaxLength: 1000
     outs:
     - path: data/localhost/alpha/htmlcompress-metrics.json
-      md5: 5617489a12f7eb1cdfe5783ea86a116f
+      md5: c28c2e497d8763748a862ef113b9357b
       size: 141
     - path: data/localhost/alpha/index.compressed.html
       md5: 0b1f6427e7c5aa9ef9c581ba081a510e
@@ -475,6 +476,7 @@ stages:
           - FORM
           - SELECT
           - BUTTON
+          - FIELD
           removeStructural:
           - DIV
           - SECTION
@@ -496,7 +498,7 @@ stages:
           attributeMaxLength: 1000
     outs:
     - path: data/localhost/beta/htmlcompress-metrics.json
-      md5: 55523340ba9c7b387b7084d498e2dcbe
+      md5: 2648fd1f6937970cb9a5921383a818bc
       size: 141
     - path: data/localhost/beta/index.compressed.html
       md5: 3651e67d4ad0d25296b8b12eccfb0f4a

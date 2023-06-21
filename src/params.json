@@ -16,7 +16,7 @@
         "removeEmpty": true,
         "removeEmptyTagExclusion": ["INPUT"],
         "textMaxLength": 500,
-        "textLengthExclusion": ["INPUT", "FORM", "SELECT", "BUTTON"],
+        "textLengthExclusion": ["INPUT", "FORM", "SELECT", "BUTTON", "FIELD"],
         "removeStructural": ["DIV", "SECTION", "MAIN", "ARTICLE", "SPAN"],
         "removeAttributeTagExclusion": ["INPUT", "FORM", "SELECT", "BUTTON"],
         "removeAttributes": ["class"],
