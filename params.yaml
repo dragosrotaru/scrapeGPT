@@ -5,3 +5,6 @@ pages:
     - 
         url: "http://localhost/beta/"
         path: "localhost/beta"
+    -   
+        url: "https://www.top100golfcourses.com/championships/BNL-challenge-trophy"
+        path: "www.top100golfcourses.com/championships/BNL-challenge-trophy"
