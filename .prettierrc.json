@@ -21,7 +21,11 @@
             "options": { "parser": "markdown" }
         },
         {
-            "files": "*.{html}",
+            "files": "*.yml",
+            "options": { "parser": "yaml" }
+        },
+        {
+            "files": "*.html",
             "options": { "parser": "html" }
         }
     ]

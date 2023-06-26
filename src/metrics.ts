@@ -1,10 +1,9 @@
 import fs from "fs";
 import example from "../data/localhost/alpha/formcode-metrics.json";
 import sites from "./sites.json";
+
 /* 
-
 Name,Value,Timestamp,Step
-
 */
 
 type FormCodeMetrics = typeof example;

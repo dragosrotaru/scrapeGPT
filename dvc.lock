@@ -229,25 +229,19 @@ stages:
     cmd: npm start -- html retrieve -u http://localhost/beta/
     deps:
     - path: src/html/retrieve.ts
-      md5: cbc83ffede71f765872bfa2e2d33018a
-      size: 868
+      md5: f4e66d171e63e8bbc72d6f089695652d
+      size: 1020
     params:
-      params.yaml:
-        pages:
-        - url: http://localhost/alpha/
-          path: localhost/alpha
-        - url: http://localhost/beta/
-          path: localhost/beta
       src/params.json:
         htmlretrieve: {}
         puppeteer:
-          userDataDir: ./user
+          userDataDir: ''
           headless: false
           viewport:
             width: 1400
             height: 1000
-          userAgent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like
-            Gecko) Chrome
+          userAgent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101
+            Firefox/113.0
     outs:
     - path: data/localhost/beta/htmlretrieve-metrics.json
       md5: e6a068a0e2df3fa626274ca7b00d8074
@@ -262,25 +256,19 @@ stages:
     cmd: npm start -- html retrieve -u http://localhost/alpha/
     deps:
     - path: src/html/retrieve.ts
-      md5: cbc83ffede71f765872bfa2e2d33018a
-      size: 868
+      md5: f4e66d171e63e8bbc72d6f089695652d
+      size: 1020
     params:
-      params.yaml:
-        pages:
-        - url: http://localhost/alpha/
-          path: localhost/alpha
-        - url: http://localhost/beta/
-          path: localhost/beta
       src/params.json:
         htmlretrieve: {}
         puppeteer:
-          userDataDir: ./user
+          userDataDir: ''
           headless: false
           viewport:
             width: 1400
             height: 1000
-          userAgent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like
-            Gecko) Chrome
+          userAgent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101
+            Firefox/113.0
     outs:
     - path: data/localhost/alpha/htmlretrieve-metrics.json
       md5: 9ea1c87798d2160e522e524cbfba7699
@@ -298,43 +286,49 @@ stages:
       md5: c909a9dacaca4d36451a6fc0122ee4cb
       size: 3860
     - path: src/html/compress.ts
-      md5: d91ccbdd3f34f33536a95f9bb24fb4c8
-      size: 6843
+      md5: 30e1e31e1a7d2feb077e5094416667e7
+      size: 6897
     params:
       src/params.json:
         htmlcompress:
-          tokenizeInput: true
-          focusOnFirstTag: FORM
-          removeTags: []
+          tokenizeInput: false
+          focusOnFirstTag:
           removeEmpty: true
-          removeEmptyTagExclusion:
-          - INPUT
           textMaxLength: 500
-          textLengthExclusion:
-          - INPUT
-          - FORM
-          - SELECT
-          - BUTTON
-          - FIELD
+          attributeMaxLength: 1000
+          removeTags:
+          - STYLE
+          - SCRIPT
+          - NOSCRIPT
+          - HEAD
+          - svg
+          removeAttributes:
+          - class
+          - style
           removeStructural:
           - DIV
           - SECTION
           - MAIN
           - ARTICLE
           - SPAN
+          removeEmptyTagExclusion:
+          - INPUT
+          textLengthExclusion:
+          - INPUT
+          - FORM
+          - SELECT
+          - BUTTON
+          - FIELD
           removeAttributeTagExclusion:
           - INPUT
           - FORM
           - SELECT
           - BUTTON
-          removeAttributes:
-          - class
           removeAttributeExclusion:
           - INPUT
           - FORM
           - SELECT
           - BUTTON
-          attributeMaxLength: 1000
     outs:
     - path: data/localhost/alpha/htmlcompress-metrics.json
       md5: c28c2e497d8763748a862ef113b9357b
@@ -459,43 +453,49 @@ stages:
       md5: d2e0ff4369cdf55b153e16f4023e9182
       size: 2795
     - path: src/html/compress.ts
-      md5: d91ccbdd3f34f33536a95f9bb24fb4c8
-      size: 6843
+      md5: 30e1e31e1a7d2feb077e5094416667e7
+      size: 6897
     params:
       src/params.json:
         htmlcompress:
-          tokenizeInput: true
-          focusOnFirstTag: FORM
-          removeTags: []
+          tokenizeInput: false
+          focusOnFirstTag:
           removeEmpty: true
-          removeEmptyTagExclusion:
-          - INPUT
           textMaxLength: 500
-          textLengthExclusion:
-          - INPUT
-          - FORM
-          - SELECT
-          - BUTTON
-          - FIELD
+          attributeMaxLength: 1000
+          removeTags:
+          - STYLE
+          - SCRIPT
+          - NOSCRIPT
+          - HEAD
+          - svg
+          removeAttributes:
+          - class
+          - style
           removeStructural:
           - DIV
           - SECTION
           - MAIN
           - ARTICLE
           - SPAN
+          removeEmptyTagExclusion:
+          - INPUT
+          textLengthExclusion:
+          - INPUT
+          - FORM
+          - SELECT
+          - BUTTON
+          - FIELD
           removeAttributeTagExclusion:
           - INPUT
           - FORM
           - SELECT
           - BUTTON
-          removeAttributes:
-          - class
           removeAttributeExclusion:
           - INPUT
           - FORM
           - SELECT
           - BUTTON
-          attributeMaxLength: 1000
     outs:
     - path: data/localhost/beta/htmlcompress-metrics.json
       md5: 2648fd1f6937970cb9a5921383a818bc
@@ -635,13 +635,13 @@ stages:
           waitForIdleTime: 500
           waitForTimeout: 5000
         puppeteer:
-          userDataDir: ./user
+          userDataDir: ''
           headless: false
           viewport:
             width: 1400
             height: 1000
-          userAgent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like
-            Gecko) Chrome
+          userAgent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101
+            Firefox/113.0
     outs:
     - path: data/localhost/alpha/formfill-metrics.json
       md5: 31f78c23d0616ef1e7f10d8f59a33314
@@ -671,13 +671,13 @@ stages:
           waitForIdleTime: 500
           waitForTimeout: 5000
         puppeteer:
-          userDataDir: ./user
+          userDataDir: ''
           headless: false
           viewport:
             width: 1400
             height: 1000
-          userAgent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like
-            Gecko) Chrome
+          userAgent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101
+            Firefox/113.0
     outs:
     - path: data/localhost/beta/formfill-metrics.json
       md5: 51db3474bca9768dbb1531d9f2847b55
