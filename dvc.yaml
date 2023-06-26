@@ -1,5 +1,4 @@
 params:
-  - src/sites.json
   - src/params.json
 stages:
   htmlretrieve:
@@ -8,8 +7,6 @@ stages:
       frozen: true
       cmd: npm start -- html retrieve -u ${item.url}
       params:
-        - params.yaml:
-          - pages
         - src/params.json:
           - htmlretrieve
           - puppeteer

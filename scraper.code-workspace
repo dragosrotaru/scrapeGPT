@@ -27,6 +27,7 @@
       "source.fixAll.tslint": true,
       "source.organizeImports": true
     },
+    "editor.maxTokenizationLineLength": 20000,
     "debug.inlineValues": "on",
     "dvc.dvcPath": "dvc"
   }

@@ -3,8 +3,10 @@ import { Page } from "puppeteer";
 /** simple method to retrieve html from a webpage */
 export const htmlretrieve = async (url: string, page: Page) => {
     try {
-        await page.goto(url);
-        const original = await page.content();
+        const referer = new URL(url).origin;
+        await page.goto(url, { waitUntil: "networkidle0", referer });
+        await page.waitForTimeout(5000);
+        const original = await page.$eval("html", (el) => el.outerHTML);
         const title = await page.title();
         let description = "";
         try {

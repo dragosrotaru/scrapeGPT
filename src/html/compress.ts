@@ -12,26 +12,28 @@ const replaceRegex = (html: string, regex: [RegExp, string][]) => {
 type CompressParams = {
     tokenizeInput: boolean;
 
-    focusOnFirstTag?: string;
+    focusOnFirstTag?: string | null;
 
-    removeTags?: string[] /* Options: HEAD SCRIPT STYLE NOSCRIPT BR HEADER FOOTER NAV */;
+    removeTags?:
+        | string[]
+        | null /* Options: HEAD SCRIPT STYLE NOSCRIPT BR HEADER FOOTER NAV */;
 
-    removeEmpty?: boolean;
-    removeEmptyTagExclusion?: string[] /* Options: inputs */;
-    textMaxLength?: number;
-    textLengthExclusion?: string[] /* Options: type */;
+    removeEmpty?: boolean | null;
+    removeEmptyTagExclusion?: string[] | null /* Options: inputs */;
+    textMaxLength?: number | null;
+    textLengthExclusion?: string[] | null /* Options: type */;
 
-    removeStructural?: string[]; // Options: div section article span
+    removeStructural?: string[] | null; // Options: div section article span
 
-    removeAttributeTagExclusion?: string[] /* Options: inputs */;
-    removeAttributes?: string[] | "all" /* Options: class all */;
-    removeAttributeExclusion?: string[] /* Options: type */;
-    attributeMaxLength?: number;
+    removeAttributeTagExclusion?: string[] | null /* Options: inputs */;
+    removeAttributes?: string[] | "all" | null /* Options: class all */;
+    removeAttributeExclusion?: string[] | null /* Options: type */;
+    attributeMaxLength?: number | null;
 };
 
 export const htmlcompress = (original: string): any => {
     try {
-        const params: CompressParams = compressparams;
+        const params = compressparams as CompressParams;
         const tags = params.removeTags ? new Set(params.removeTags) : null;
 
         const focusOnFirstTag = params.focusOnFirstTag;
@@ -81,15 +83,7 @@ export const htmlcompress = (original: string): any => {
 
                 // Remove structural tags
                 if (removeStructural?.has(tag)) {
-                    if (element.attributes.length === 1) {
-                        while (element.firstChild) {
-                            element.parentNode?.insertBefore(
-                                element.firstChild,
-                                element
-                            );
-                        }
-                        element.remove();
-                    }
+                    // TODO
                 }
 
                 // Remove empty tags
@@ -104,14 +98,19 @@ export const htmlcompress = (original: string): any => {
 
                 // Remove long text
                 if (textMaxLength) {
-                    const text = element.textContent;
-                    if (
-                        text &&
-                        text.length > textMaxLength &&
-                        !textLengthExclusion?.has(tag)
-                    ) {
-                        element.textContent = text.slice(0, textMaxLength);
-                    }
+                    element.childNodes.forEach((node) => {
+                        if (node.nodeType === html.TEXT_NODE) {
+                            const text = node.textContent;
+                            if (
+                                text &&
+                                text.length > textMaxLength &&
+                                !textLengthExclusion?.has(tag)
+                            ) {
+                                node.textContent =
+                                    text.slice(0, textMaxLength) + "...";
+                            }
+                        }
+                    });
                 }
 
                 // Dont remove any attributes for these tags
@@ -170,6 +169,8 @@ export const htmlcompress = (original: string): any => {
         const html = new JSDOM(original).window.document;
         const compressed = inner(html);
         const finish = process.hrtime(start);
+
+        console.log("counting tokens");
 
         const originalTokens = params.tokenizeInput
             ? countTokens(original)

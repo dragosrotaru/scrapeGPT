@@ -57,11 +57,10 @@ Given that you have the url to an indexing webpage or results page, the basic pr
 
 ### Structural and Testability
 
--   add metrics aggregation methods and produce metrics in the standard format
--   refactor usage of puppeteer to use single browser instance
 -   generate synthetic test data using gpt
--   implement use of experiments
 
+-   add metrics aggregation methods and produce metrics in the standard format
+-   implement use of experiments
 -   refactor stage interfaces to be Exact/Partial return type and infer deps
 
 ## Next levels
@@ -152,6 +151,7 @@ try again
 
 ## Blocker Detection
 
+-   cloudflare block
 -   popup banner
 -   geo block
 -   login
