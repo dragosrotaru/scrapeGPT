@@ -685,3 +685,209 @@ stages:
     - path: data/localhost/beta/formfill-result.json
       md5: 15b5903d07c2e47b1511212deb68eba2
       size: 109
+  htmlretrieve@2:
+    cmd: npm start -- html retrieve -u https://www.top100golfcourses.com/championships/BNL-challenge-trophy
+    deps:
+    - path: src/html/retrieve.ts
+      md5: f4e66d171e63e8bbc72d6f089695652d
+      size: 1020
+    params:
+      src/params.json:
+        htmlretrieve: {}
+        puppeteer:
+          userDataDir: ''
+          headless: false
+          viewport:
+            width: 1400
+            height: 1000
+          userAgent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101
+            Firefox/113.0
+    outs:
+    - path: 
+        data/www.top100golfcourses.com/championships/BNL-challenge-trophy/htmlretrieve-metrics.json
+      md5: c3a4b0248bd1c5ccbd5da4c134cd4def
+      size: 50
+    - path: data/www.top100golfcourses.com/championships/BNL-challenge-trophy/index.html
+      md5: bbe90ec827672a36e8c2fd50d42da3e1
+      size: 101127
+    - path: data/www.top100golfcourses.com/championships/BNL-challenge-trophy/index.json
+      md5: 3d8568e9ee777ea7dc6014e9bfc57af4
+      size: 145
+  htmlcompress@2:
+    cmd: npm start -- html compress -u https://www.top100golfcourses.com/championships/BNL-challenge-trophy
+    deps:
+    - path: data/www.top100golfcourses.com/championships/BNL-challenge-trophy/index.html
+      md5: bbe90ec827672a36e8c2fd50d42da3e1
+      size: 101127
+    - path: src/html/compress.ts
+      md5: 30e1e31e1a7d2feb077e5094416667e7
+      size: 6897
+    params:
+      src/params.json:
+        htmlcompress:
+          tokenizeInput: false
+          focusOnFirstTag:
+          removeEmpty: true
+          textMaxLength: 500
+          attributeMaxLength: 1000
+          removeTags:
+          - STYLE
+          - SCRIPT
+          - NOSCRIPT
+          - HEAD
+          - svg
+          removeAttributes:
+          - class
+          - style
+          removeStructural:
+          - DIV
+          - SECTION
+          - MAIN
+          - ARTICLE
+          - SPAN
+          removeEmptyTagExclusion:
+          - INPUT
+          textLengthExclusion:
+          - INPUT
+          - FORM
+          - SELECT
+          - BUTTON
+          - FIELD
+          removeAttributeTagExclusion:
+          - INPUT
+          - FORM
+          - SELECT
+          - BUTTON
+          removeAttributeExclusion:
+          - INPUT
+          - FORM
+          - SELECT
+          - BUTTON
+    outs:
+    - path: 
+        data/www.top100golfcourses.com/championships/BNL-challenge-trophy/htmlcompress-metrics.json
+      md5: f63a66ac42e6c78bed6700ac716b805d
+      size: 127
+    - path: 
+        data/www.top100golfcourses.com/championships/BNL-challenge-trophy/index.compressed.html
+      md5: 7f8efca6ad0a655ae8f9479735f7bf0f
+      size: 8364
+  formcode@2:
+    cmd: npm start -- form code -u https://www.top100golfcourses.com/championships/BNL-challenge-trophy
+    deps:
+    - path: 
+        data/www.top100golfcourses.com/championships/BNL-challenge-trophy/index.compressed.html
+      md5: 7f8efca6ad0a655ae8f9479735f7bf0f
+      size: 8364
+    - path: src/forms/code.ts
+      md5: 202e8357f400f16bf32760bf20498a7c
+      size: 2328
+    - path: src/gpt.ts
+      md5: 12653a2734556486b918b2ea0dcafa02
+      size: 3136
+    - path: src/lint.ts
+      md5: d91d398b84e1750d9a251be16711d217
+      size: 772
+    params:
+      src/params.json:
+        formcode:
+          prompt:
+            outputSpec:
+            - accepts a puppeteer page as the first parameter
+            - accepts all the inputs accepted on the webpage which follows below as
+              the second parameter (an object with camelCase keys)
+            - checks if each parameter exists before attempting to fill it in
+            - correctly fills in every input
+            - triggers a submission
+            - does nothing else
+            includesHTMLBlockMarkup: true
+            usesListDelimitation: true
+    outs:
+    - path: 
+        data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formcode-lint.json
+      md5: 5020644900aa80dc326244bd6c62fef6
+      size: 1363
+    - path: 
+        data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formcode-metrics.json
+      md5: a172d8a9710c987edd6110109b2ac9e8
+      size: 1072
+    - path: 
+        data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formcode-result.json
+      md5: 5d8e60158eeef3f5a18c4b9e5121c255
+      size: 10025
+    - path: data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formcode.js
+      md5: 44755fa24a38977852687bce9320af63
+      size: 583
+  formprops@2:
+    cmd: npm start -- form props -u https://www.top100golfcourses.com/championships/BNL-challenge-trophy
+    deps:
+    - path: data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formcode.js
+      md5: 44755fa24a38977852687bce9320af63
+      size: 583
+    - path: data/www.top100golfcourses.com/championships/BNL-challenge-trophy/index.json
+      md5: 3d8568e9ee777ea7dc6014e9bfc57af4
+      size: 145
+    - path: src/forms/props.ts
+      md5: 793b78bc42331730f5bdff3141ef3510
+      size: 2468
+    - path: src/gpt.ts
+      md5: 12653a2734556486b918b2ea0dcafa02
+      size: 3136
+    params:
+      src/params.json:
+        formprops:
+          prompt:
+            includeDescription: true
+            includeTitle: true
+            includeURL: true
+            includesCodeBlockMarkup: true
+    outs:
+    - path: 
+        data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formprops-metrics.json
+      md5: 993dca2af3b7f453cb742d83d1175ba8
+      size: 789
+    - path: 
+        data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formprops-result.json
+      md5: 81b722f6dc8a4dd35236218b48f40b39
+      size: 1679
+    - path: data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formprops.json
+      md5: d6316df692e2e2a9f0997e48316b4c44
+      size: 298
+  formschema@2:
+    cmd: npm start -- form schema -u https://www.top100golfcourses.com/championships/BNL-challenge-trophy
+    deps:
+    - path: data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formprops.json
+      md5: d6316df692e2e2a9f0997e48316b4c44
+      size: 298
+    - path: src/forms/schema.ts
+      md5: eb8d39df902952f85f66de94a8f5c3ed
+      size: 679
+    - path: src/json
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    - path: src/lint.ts
+      md5: d91d398b84e1750d9a251be16711d217
+      size: 772
+    params:
+      src/params.json:
+        formschema:
+          numberUniqueRatio: 0.05
+          numberUniqueSize: 10
+          stringUniqueRatio: 0.333
+    outs:
+    - path: 
+        data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formschema-lint.json
+      md5: ec285c302f0ef1f9e6d528137507a146
+      size: 285
+    - path: 
+        data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formschema-metrics.json
+      md5: 99ac858646a35563c20e7913dec3ad5a
+      size: 27
+    - path: 
+        data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formschema-result.json
+      md5: 9a00cb7abe85bb90e9e8f1ddc8703c4e
+      size: 367
+    - path: data/www.top100golfcourses.com/championships/BNL-challenge-trophy/formschema.js
+      md5: 86f5abe1c3ae18f5e7537a1632d10faf
+      size: 245
