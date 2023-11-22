@@ -5,3 +5,4 @@ user
 mobile
 data
 !data/**/*.dvc
+.env
