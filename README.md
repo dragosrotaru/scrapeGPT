@@ -1,6 +1,6 @@
 # scrapeGPT
 
-ScrapeGPT is a tool which autogenerates sdks around websites using machine learning.
+ScrapeGPT is a tool which autogenerates sdks around websites using LLMs
 
 This package contains a number of useful sub-modules which are useful in their own right for highly
 generalized tasks.
