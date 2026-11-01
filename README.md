@@ -1,22 +1,42 @@
 # scrapeGPT
 
-ScrapeGPT is a tool which autogenerates sdks around websites using LLMs
+Generate scrapers and typed SDKs for arbitrary websites with LLM code generation.
 
-This package contains a number of useful sub-modules which are useful in their own right for highly
-generalized tasks.
+Given a URL, scrapeGPT loads the page in headless Chrome, compresses the DOM into a token-efficient form, asks GPT to identify forms and datasets, then generates a JSON schema, extraction code and form-filling code. It lints and tests the generated code against the live page. Each step is a stage in a [DVC](https://dvc.org) pipeline (`dvc.yaml`), so runs are reproducible and every stage writes metrics.
+
+Built in 2023 as an experiment, and no longer maintained.
+
+## Setup
+
+```bash
+pnpm install
+cp .env.example .env   # add your OpenAI API key
+```
 
 ## Usage
 
-`npm start -- <args>`
+`npm start -- <args>`. Run it with no arguments to list the commands.
 
-leave args empty to see instructions for commands.
+Local test pages live in `data/localhost/` (tracked with DVC, not git):
 
-use `--url http://localhost` argument to run tests (located in experiments/data).
-
-Example:
-
-1. `npm run serve experiments/data/localhost/alpha`
+1. `npm run serve data/localhost/alpha`
 2. `npm start -- generate -u http://localhost/alpha`
+
+Pipeline outputs and scraped pages are written to `data/` and stay local. Only the DVC pointers are committed.
+
+## Layout
+
+```
+src/
+  html/       retrieve pages (Puppeteer), compress the DOM, measure tree similarity
+  forms/      detect form props, generate schemas and form-filling code
+  json/       JSON to schema and AST type generation
+  puppeteer/  browser and recorder helpers
+  gpt.ts      OpenAI client and token accounting
+  lint.ts     lint generated code before running it
+  stage.ts    pipeline stage wrapper (params, metrics)
+docs/         design notes
+```
 
 ## Features
 

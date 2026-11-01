@@ -1,8 +1,7 @@
 {
-    "name": "scraper",
+    "name": "scrapegpt",
     "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
+    "description": "Generate scrapers and typed SDKs for arbitrary websites with LLM code generation",
     "scripts": {
         "start": "ts-node src/index.ts",
         "serve": "http-server -p 80 -c-1"
@@ -33,5 +32,6 @@
         "@types/node": "^20.3.1",
         "@types/prettier": "^2.7.3",
         "http-server": "^14.1.1"
-    }
+    },
+    "private": true
 }
