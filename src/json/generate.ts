@@ -63,7 +63,7 @@ export const generateValidator = (obj: JSONAST): string => {
             return `z.array(z.unknown())`;
         }
     } else if (obj.kind === "union") {
-        // TODO if there is a union of a shit ton of objects with different keys, it should be a record
+        // TODO a union of many objects with differing keys should become a z.record
         return `z.union([${obj.values.map(generateValidator)}])`;
     }
     return "z.unknown()";

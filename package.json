@@ -4,9 +4,9 @@
     "description": "Generate scrapers and typed SDKs for arbitrary websites with LLM code generation",
     "scripts": {
         "start": "ts-node src/index.ts",
-        "serve": "http-server -p 80 -c-1"
+        "serve": "http-server -p 8080 -c-1"
     },
-    "author": "",
+    "author": "Dragos Rotaru",
     "license": "ISC",
     "dependencies": {
         "@typescript-eslint/eslint-plugin": "^5.59.11",

@@ -6,3 +6,5 @@ mobile
 data
 !data/**/*.dvc
 .env
+# personal notes, not part of the project
+notes
