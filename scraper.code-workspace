@@ -23,9 +23,9 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll": true,
-      "source.fixAll.tslint": true,
-      "source.organizeImports": true
+      "source.fixAll": "always",
+      "source.fixAll.tslint": "always",
+      "source.organizeImports": "always"
     },
     "editor.maxTokenizationLineLength": 20000,
     "debug.inlineValues": "on",

@@ -5,7 +5,7 @@
         "lib": ["ESNext", "DOM"],
         "sourceMap": true,
         "rootDir": "src",
-        "moduleResolution": "node",
+        "moduleResolution": "NodeNext",
         "resolveJsonModule": true,
         "allowJs": false,
         "outDir": "build",
